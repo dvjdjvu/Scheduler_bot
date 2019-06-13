@@ -12,8 +12,6 @@ import SvetaEyesToken
 
 class SvetaEyes():
     
-    threadTimer = Thread(target=self.send_message, args=("Тренеруй глаза!",))
-    
     def __init__(self, _mongo):
         self.bot = telebot.TeleBot(SvetaEyesToken.token)
         
@@ -21,6 +19,8 @@ class SvetaEyes():
         
         self.keyboardStart = telebot.types.ReplyKeyboardMarkup()
         self.keyboardStart.row('Подключиться', 'Не подключаться')
+        
+        self.threadTimer = Thread(target=self.send_message, args=("Тренеруй глаза!",))
         
         @self.bot.message_handler(commands=['start'])
         def get_start(message):
