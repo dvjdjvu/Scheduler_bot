@@ -29,10 +29,14 @@ class SvetaEyes():
                 args = message.text.split(' ')
                 if len(args) == 2 :
                     self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name, 'time': args[1]})
-                elif len(args) == 3 :
-                    self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name, 'time': args[1], 'text': args[2]})
+                elif len(args) > 2 :
+                    text = ''
+                    for i in range(len(args) - 2) :
+                        text += args[i] + ' '
+                        
+                    self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name, 'time': args[1], 'text': text})
                     
-                    self.bot.send_message(message.chat.id, 'Я буду напоминать тебе каждый день в {}.'.format(arg[1]))
+                    self.bot.send_message(message.chat.id, 'Я буду напоминать тебе каждый день в {}.'.format(args[1]))
                 else :
                     self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
                 
