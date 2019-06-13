@@ -22,9 +22,9 @@ class SvetaEyes():
         def get_start(message):
             self.bot.send_message(message.chat.id, 'Привет, ты подключился ко мне.')
             
-            self.mongo.coll.save({'id': message.chat.id, 'name': message.from_user.first_name, 'surname': message.from_user.second_name})
+            self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
             
-            print(message.chat.id, message.from_user.first_name, message.from_user.second_name)
+            print(message.chat.id, message.from_user.first_name, message.from_user.last_name)
             
         @self.bot.message_handler(commands=['stop'])
         def get_start(message):
