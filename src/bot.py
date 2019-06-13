@@ -70,8 +70,8 @@ class SvetaEyes():
     def send_message(self, message) :
         while True:
         
-            for men in self.mongo.coll.find({"id": message.chat.id}):
-                self.bot.send_message(message.from_user.id, men.get('time', ''), men.get('text', ''))
+            for men in self.mongo.coll.find():
+                self.bot.send_message(men[id], men.get('time', ''), men.get('text', ''))
                 
             time.sleep(30)
             
