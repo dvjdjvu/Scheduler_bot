@@ -4,11 +4,15 @@
 import sys
 sys.path.append('../token')
 
+from threading import Thread
+import sched, time
 import telebot
 import mongo
 import SvetaEyesToken
 
 class SvetaEyes():
+    
+    threadTimer = Thread(target=self.send_message, args=("Тренеруй глаза!",))
     
     def __init__(self, _mongo):
         self.bot = telebot.TeleBot(SvetaEyesToken.token)
@@ -24,9 +28,17 @@ class SvetaEyes():
                 
                 self.bot.send_message(message.chat.id, 'Привет, ты подключился ко мне.')
             
-                self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
-            
-                print(message.chat.id, message.from_user.first_name, message.from_user.last_name)
+                #print(message.chat.id, message.from_user.first_name, message.from_user.last_name)
+                
+                args = message.text.split(' ')
+                if len(args) == 2 :
+                    self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name, 'time': args[1]})
+                elif len(args) == 3 :
+                    self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name, 'time': args[1], , 'text': args[2]})
+                else :
+                    self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
+                
+                #print(message.text)
             else :
                 self.bot.send_message(message.chat.id, 'Привет, ты уже подключен ко мне.')
             
@@ -44,10 +56,27 @@ class SvetaEyes():
                 self.bot.send_message(message.from_user.id, "Ты ко мне не подключен, напиши /start")
     
     def __del__(self):
+        self.threadTimer.do_run = False
+        
+        self.threadTimer.join()
+        
         pass
     
     def run(self):
+        self.threadTimer.start()
+        
         self.bot.polling(none_stop=True, interval=0)
+        
+    def send_message(self, message) :
+        while True:
+        
+            for men in self.mongo.coll.find({"id": message.chat.id}):
+                self.bot.send_message(message.from_user.id, men.get('time', ''), men.get('text', ''))
+                
+            time.sleep(30)
+            
+            
+        
     
     
     
