@@ -10,9 +10,9 @@ import SvetaEyesToken
 
 class SvetaEyes():
     
-    bot = telebot.TeleBot(SvetaEyesToken.token)
-    
     def __init__(self, _mongo):
+        self.bot = telebot.TeleBot(SvetaEyesToken.token)
+        
         self.mongo = _mongo
         
         self.keyboardStart = telebot.types.ReplyKeyboardMarkup()
