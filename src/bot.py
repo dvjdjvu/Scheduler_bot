@@ -73,7 +73,7 @@ class SvetaEyes():
         while True:
         
             for men in self.mongo.coll.find():
-                self.bot.send_message(men['id'], men.get('time', ''), men.get('text', ''))
+                self.bot.send_message(men['id'], men.get('time', 'QQQ'), men.get('text', 'WWW'))
                 
             time.sleep(30)
             
