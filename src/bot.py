@@ -68,10 +68,12 @@ class SvetaEyes():
         self.bot.polling(none_stop=True, interval=0)
         
     def send_message(self, message) :
+        time.sleep(10)
+        
         while True:
         
             for men in self.mongo.coll.find():
-                self.bot.send_message(men[id], men.get('time', ''), men.get('text', ''))
+                self.bot.send_message(men['id'], men.get('time', ''), men.get('text', ''))
                 
             time.sleep(30)
             
