@@ -17,28 +17,24 @@ class SvetaEyes():
         
         self.mongo = _mongo
         
-        self.keyboardStart = telebot.types.ReplyKeyboardMarkup()
-        self.keyboardStart.row('Подключиться', 'Не подключаться')
-        
-        self.threadTimer = Thread(target=self.send_message, args=("Тренеруй глаза!",))
+        self.threadTimer = Thread(target=self.send_message, args=("Напоминание!",))
         
         @self.bot.message_handler(commands=['start'])
         def get_start(message):
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
                 
                 self.bot.send_message(message.chat.id, 'Привет, ты подключился ко мне.')
-            
-                #print(message.chat.id, message.from_user.first_name, message.from_user.last_name)
                 
                 args = message.text.split(' ')
                 if len(args) == 2 :
                     self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name, 'time': args[1]})
                 elif len(args) == 3 :
                     self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name, 'time': args[1], 'text': args[2]})
+                    
+                    self.bot.send_message(message.chat.id, 'Я буду напоминать тебе каждый день в {}.'.format(arg[1]))
                 else :
                     self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
                 
-                #print(message.text)
             else :
                 self.bot.send_message(message.chat.id, 'Привет, ты уже подключен ко мне.')
             
@@ -68,14 +64,16 @@ class SvetaEyes():
         self.bot.polling(none_stop=True, interval=0)
         
     def send_message(self, message) :
-        time.sleep(10)
         
         while True:
         
             for men in self.mongo.coll.find():
-                self.bot.send_message(men['id'], men.get('time', 'QQQ'), men.get('text', 'WWW'))
+                now = datetime.datetime.now()
                 
-            time.sleep(30)
+                if men.get('time', '') == (str(now.hour) + ':' + str(now.minute)) :
+                    self.bot.send_message(men['id'], men.get('text', message))
+                
+            time.sleep(59)
             
             
         
