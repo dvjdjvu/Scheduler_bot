@@ -24,7 +24,7 @@ class SvetaEyes():
     def run(self):
         self.bot.polling(none_stop=True, interval=0)
     
-    @bot.message_handler(commands=['start'])
+    @self.bot.message_handler(commands=['start'])
     def get_start(message):
         self.bot.send_message(message.chat.id, 'Привет, ты подключился ко мне.')
         
@@ -32,13 +32,13 @@ class SvetaEyes():
         
         print(message.chat.id, message.user.first_name)
         
-    @bot.message_handler(commands=['stop'])
+    @self.bot.message_handler(commands=['stop'])
     def get_start(message):
         self.bot.send_message(message.chat.id, 'Привет, ты отключился от меня.')
         self.mongo.coll.remove({"id": message.chat.id})
     
     
-    @bot.message_handler(content_types=['text'])
+    @self.bot.message_handler(content_types=['text'])
     def get_text(message):
         for men in self.mongo.coll.find({"id": message.chat.id}):
             self.bot.send_message(message.from_user.id, "Привет ", men["name"])
