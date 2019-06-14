@@ -48,6 +48,9 @@ class SvetaEyes():
                 '''
             else :
                 self.bot.send_message(message.chat.id, 'Привет ты уже подключен.')
+                
+            for men in self.mongo.coll.find({"id": message.chat.id}):
+                print(men)
         
         # Добавить напоминание
         @self.bot.message_handler(commands=['add'])
@@ -65,6 +68,9 @@ class SvetaEyes():
                     text += args[i + 2] + ' '
                     
                 self.mongo.coll.update({'id': message.chat.id}, {'time': args[1], 'text': text, "status": True})
+                
+            for men in self.mongo.coll.find({"id": message.chat.id}):
+                print(men)            
         
         # Прекращаем слать напоминания
         @self.bot.message_handler(commands=['stop'])
@@ -75,6 +81,9 @@ class SvetaEyes():
             self.mongo.coll.update({"id": message.chat.id}, {"status": False})
             
             self.bot.send_message(message.chat.id, 'Отправка напоминаний остановлена.')
+            
+            for men in self.mongo.coll.find({"id": message.chat.id}):
+                print(men)            
         
         # Удаляем информацию из базы
         @self.bot.message_handler(commands=['del'])
@@ -82,6 +91,9 @@ class SvetaEyes():
             self.mongo.coll.remove({"id": message.chat.id})
             
             self.bot.send_message(message.chat.id, 'Всего доброго.')
+            
+            for men in self.mongo.coll.find({"id": message.chat.id}):
+                print(men)            
         
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
@@ -102,6 +114,9 @@ class SvetaEyes():
             
             timezone = pytz.timezone(timezone_str)
             self.mongo.coll.update({"id": message.chat.id}, {"timezone": timezone, "timezone_offset": timezone.utcoffset(datetime.datetime.now())})
+            
+            for men in self.mongo.coll.find({"id": message.chat.id}):
+                print(men)            
             
                 
     def __del__(self):
