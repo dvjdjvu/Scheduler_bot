@@ -127,7 +127,6 @@ class SvetaEyes():
                 _time = men.get('time', None)
                 _timezone = men.get('timezone', None)
                 print(men, _time, _timezone)
-                print(men['id'], _time, _timezone)
                 
                 if _time and _timezone:
                     now = datetime.datetime.now()
