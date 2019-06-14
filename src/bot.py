@@ -164,15 +164,15 @@ class SvetaEyes():
                 time_user = ''
                 
                 _time = men.get('time', None)
-                _timezone = men.get('timezone', None)
-                #print(men, _time, _timezone)
+                timezone_offset = men.get('timezone_offset', None)
+                #print(men, _time, timezone_offset)
                 
-                if _time and _timezone:
+                if _time and timezone_offset:
                     now = datetime.datetime.now()
                     
-                    time_user = (now + datetime.timedelta(hours=int(_timezone.split(':')[0]), minutes=int(_timezone.split(':')[1]))).strftime('%H:%M')
+                    time_user = (now + datetime.timedelta(hours=int(timezone_offset.split(':')[0]), minutes=int(timezone_offset.split(':')[1]))).strftime('%H:%M')
                 
-                    #print(now, _time, time_user, _timezone)
+                    print(now, _time, time_user, timezone_offset)
                     if _time == time_user :
                         self.bot.send_message(men['id'], men.get('text', message))
                 
