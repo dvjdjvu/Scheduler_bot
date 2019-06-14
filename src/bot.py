@@ -26,7 +26,7 @@ class SvetaEyes():
             print(men)        
         
         # удаляем все документы коллекции
-        self.mongo.coll.remove({})        
+        #self.mongo.coll.remove({})        
         
         # Регистрация в системе
         @self.bot.message_handler(commands=['start'])
