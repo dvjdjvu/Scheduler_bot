@@ -12,6 +12,7 @@ import sched, time
 import telebot
 import mongo
 import SvetaEyesToken
+import json
 
 class SvetaEyes():
     
@@ -130,10 +131,10 @@ class SvetaEyes():
             tz = tzwhere.tzwhere()
             timezone_str = tz.tzNameAt(message.location.latitude, message.location.longitude)            
             
-            timezone = pytz.timezone(timezone_str).encode('string-escape')
+            timezone = json.dumps(pytz.timezone(timezone_str))
             print(timezone, timezone.utcoffset(datetime.datetime.now()))
             
-            #self.mongo.coll.update({"id": message.chat.id}, {"$set": {"timezone": timezone, "timezone_offset": timezone.utcoffset(datetime.datetime.now())}})
+            self.mongo.coll.update({"id": message.chat.id}, {"$set": {"timezone": timezone, "timezone_offset": timezone.utcoffset(datetime.datetime.now())}})
             
             for men in self.mongo.coll.find({"id": message.chat.id}):
                 print(men)            
