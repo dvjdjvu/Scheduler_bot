@@ -22,12 +22,15 @@ class SvetaEyes():
         
         self.threadTimer = Thread(target=self.send_message, args=("Напоминание!",))
         
+        # Регистрация в системе
         @self.bot.message_handler(commands=['start'])
         def get_start(message):
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
                 
                 self.bot.send_message(message.chat.id, 'Привет, ты подключился ко мне.')
-                self.bot.send_message(message.chat.id, 'Пришли мне свое местоположение, что бы я определил твое время.')
+                self.bot.send_message(message.chat.id, 'Пришли мне свое местоположение, что бы я узнал твое время.')
+                
+                self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
                 '''
                 args = message.text.split(' ')
                 if len(args) == 2 :
@@ -44,12 +47,41 @@ class SvetaEyes():
                     self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
                 '''
             else :
-                self.bot.send_message(message.chat.id, 'Привет, ты уже подключен ко мне.')
+                self.bot.send_message(message.chat.id, 'Привет ты уже подключен.')
+        
+        # Добавить напоминание
+        @self.bot.message_handler(commands=['add'])
+        def get_add(message):
+            if not self.mongo.coll.find({"id": message.chat.id}).count() :
+                self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
             
+            args = message.text.split(' ')
+            if len(args) < 3 :
+                self.bot.send_message(message.chat.id, 'Формат команды: /add время(14:15) мое напоминание')
+                return
+            else :
+                text = ''
+                for i in range(len(args) - 2) :
+                    text += args[i] + ' '
+                    
+                self.mongo.coll.update({'id': message.chat.id, 'time': args[1], 'text': text, "status": True})
+        
+        # Прекращаем слать напоминания
         @self.bot.message_handler(commands=['stop'])
-        def get_start(message):
-            self.bot.send_message(message.chat.id, 'Привет, ты отключился от меня.')
+        def get_stop(message):
+            if not self.mongo.coll.find({"id": message.chat.id}).count() :
+                self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
+                
+            self.mongo.coll.update({"id": message.chat.id}, {"status": False})
+            
+            self.bot.send_message(message.chat.id, 'Отправка напоминаний остановлена.')
+        
+        # Удаляем информацию из базы
+        @self.bot.message_handler(commands=['del'])
+        def get_del(message):
             self.mongo.coll.remove({"id": message.chat.id})
+            
+            self.bot.send_message(message.chat.id, 'Всего доброго.')
         
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
@@ -59,21 +91,18 @@ class SvetaEyes():
             else :
                 self.bot.send_message(message.from_user.id, "Ты ко мне не подключен, напиши /start")
     
+        # Локация пользователя
         @self.bot.message_handler(content_types=['location'])
-        def get_text(message):
+        def get_location(message):
+            ##
+            #  Берем временную зону пользователя.
+            ##
             tz = tzwhere.tzwhere()
             timezone_str = tz.tzNameAt(message.location.latitude, message.location.longitude)            
             
             timezone = pytz.timezone(timezone_str)
-            print(timezone)
-            dt = datetime.datetime.now()
-            print(dt)
-            print(timezone.utcoffset(dt))
+            self.mongo.coll.update({"id": message.chat.id}, {"timezone": timezone, "timezone_offset": timezone.utcoffset(datetime.datetime.now())})
             
-            print(timezone_str)
-            
-            print(message.location.latitude, message.location.longitude)
-                
                 
     def __del__(self):
         self.threadTimer.do_run = False
@@ -94,8 +123,14 @@ class SvetaEyes():
             for men in self.mongo.coll.find():
                 now = datetime.datetime.now()
                 
-                if men.get('time', '') == (str(now.hour) + ':' + str(now.minute)) :
-                    self.bot.send_message(men['id'], men.get('text', message))
+                time_user = ''
+                
+                time = men.get('time', None)
+                if time :
+                    time_user = (datetime.datetime.now() + datetime.timedelta(hours=int(time.split(':')[0]), minutes=int(time.split(':')[1]))).strftime('%H:%M')
+                
+                    if time == time_user :
+                        self.bot.send_message(men['id'], men.get('text', message))
                 
             time.sleep(59)
             
