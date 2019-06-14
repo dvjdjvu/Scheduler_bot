@@ -61,8 +61,8 @@ class SvetaEyes():
     
         @self.bot.message_handler(content_types=['location'])
         def get_text(message):
-            tzwhere = tzwhere.tzwhere()
-            timezone_str = tzwhere.tzNameAt(message.location.latitude, message.location.longitude)            
+            tz = tzwhere.tzwhere()
+            timezone_str = tz.tzNameAt(message.location.latitude, message.location.longitude)            
             
             print(timezone_str)
             
