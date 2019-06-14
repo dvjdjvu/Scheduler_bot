@@ -25,6 +25,8 @@ class SvetaEyes():
         # Регистрация в системе
         @self.bot.message_handler(commands=['start'])
         def get_start(message):
+            print('start', message.chat.id)
+            
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
                 
                 self.bot.send_message(message.chat.id, 'Привет, ты подключился ко мне.')
@@ -55,6 +57,8 @@ class SvetaEyes():
         # Добавить напоминание
         @self.bot.message_handler(commands=['add'])
         def get_add(message):
+            print('add', message.chat.id)
+            
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
                 self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
             
@@ -75,6 +79,8 @@ class SvetaEyes():
         # Прекращаем слать напоминания
         @self.bot.message_handler(commands=['stop'])
         def get_stop(message):
+            print('stop', message.chat.id)
+            
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
                 self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
                 
@@ -88,6 +94,8 @@ class SvetaEyes():
         # Удаляем информацию из базы
         @self.bot.message_handler(commands=['del'])
         def get_del(message):
+            print('del', message.chat.id)
+            
             self.mongo.coll.remove({"id": message.chat.id})
             
             self.bot.send_message(message.chat.id, 'Всего доброго.')
@@ -97,6 +105,8 @@ class SvetaEyes():
         
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
+            print('text', message.chat.id)
+            
             if self.mongo.coll.find({"id": message.chat.id}).count() :
                 for men in self.mongo.coll.find({"id": message.chat.id}):
                     self.bot.send_message(message.from_user.id, "Привет ", men.get("name", ''))
