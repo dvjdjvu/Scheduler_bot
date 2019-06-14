@@ -62,7 +62,7 @@ class SvetaEyes():
             else :
                 text = ''
                 for i in range(len(args) - 2) :
-                    text += args[i] + ' '
+                    text += args[i + 2] + ' '
                     
                 self.mongo.coll.update({'id': message.chat.id}, {'time': args[1], 'text': text, "status": True})
         
