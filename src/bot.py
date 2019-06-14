@@ -129,6 +129,7 @@ class SvetaEyes():
                 if _time :
                     time_user = (datetime.datetime.now() + datetime.timedelta(hours=int(_time.split(':')[0]), minutes=int(_time.split(':')[1]))).strftime('%H:%M')
                 
+                    print(_time, time_user)
                     if _time == time_user :
                         self.bot.send_message(men['id'], men.get('text', message))
                 
