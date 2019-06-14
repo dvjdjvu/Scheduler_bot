@@ -26,7 +26,7 @@ class SvetaEyes():
             print(men)        
         
         # удаляем все документы коллекции
-        #self.mongo.coll.remove({})        
+        self.mongo.coll.remove({})        
         
         # Регистрация в системе
         @self.bot.message_handler(commands=['start'])
@@ -77,7 +77,7 @@ class SvetaEyes():
                 for i in range(len(args) - 2) :
                     text += args[i + 2] + ' '
                     
-                self.mongo.coll.update({'id': message.chat.id}, {'time': args[1], 'text': text, "status": True})
+                self.mongo.coll.update({'id': message.chat.id}, {"$set": {'time': args[1], 'text': text, "status": True}})
                 
             print(self.mongo.coll.find({"id": message.chat.id}).count())
             for men in self.mongo.coll.find({"id": message.chat.id}):
