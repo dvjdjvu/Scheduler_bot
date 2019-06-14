@@ -125,9 +125,11 @@ class SvetaEyes():
                 time_user = ''
                 
                 _time = men.get('time', None)
-                if _time :
+                _timezone = men.get('timezone', None)
+                if _time and _timezone:
                     now = datetime.datetime.now()
-                    time_user = (now + datetime.timedelta(hours=int(_time.split(':')[0]), minutes=int(_time.split(':')[1]))).strftime('%H:%M')
+                    
+                    time_user = (now + datetime.timedelta(hours=int(_timezone.split(':')[0]), minutes=int(_timezone.split(':')[1]))).strftime('%H:%M')
                 
                     print(now, _time, time_user)
                     if _time == time_user :
