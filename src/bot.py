@@ -4,7 +4,8 @@
 import sys
 sys.path.append('../token')
 
-import geonames
+import pytz
+from tzwhere import tzwhere
 import datetime
 from threading import Thread
 import sched, time
@@ -60,9 +61,10 @@ class SvetaEyes():
     
         @self.bot.message_handler(content_types=['location'])
         def get_text(message):
-            geonames_client = geonames.GeonamesClient('demo')
-            geonames_result = geonames_client.find_timezone({'lat': message.location.latitude, 'lng': message.location.longitude})
-            print(geonames_result['timezoneId'])
+            tzwhere = tzwhere.tzwhere()
+            timezone_str = tzwhere.tzNameAt(message.location.latitude, message.location.longitude)            
+            
+            print(timezone_str)
             
             print(message.location.latitude, message.location.longitude)
                 
