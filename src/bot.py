@@ -53,7 +53,7 @@ class SvetaEyes():
         def get_text(message):
             if self.mongo.coll.find({"id": message.chat.id}).count() :
                 for men in self.mongo.coll.find({"id": message.chat.id}):
-                    self.bot.send_message(message.from_user.id, "Привет ", men["name"])
+                    self.bot.send_message(message.from_user.id, "Привет ", men.get("name", ''))
             else :
                 self.bot.send_message(message.from_user.id, "Ты ко мне не подключен, напиши /start")
     
