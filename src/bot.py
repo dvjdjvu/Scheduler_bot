@@ -57,6 +57,11 @@ class SvetaEyes():
             else :
                 self.bot.send_message(message.from_user.id, "Ты ко мне не подключен, напиши /start")
     
+        @self.bot.message_handler(content_types=['location'])
+        def get_text(message):
+            print(message.location.latitude, message.location.longitude)
+                
+                
     def __del__(self):
         self.threadTimer.do_run = False
         
