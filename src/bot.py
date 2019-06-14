@@ -22,6 +22,9 @@ class SvetaEyes():
         
         self.threadTimer = Thread(target=self.send_message, args=("Напоминание!",))
         
+        for men in self.mongo.coll.find():
+            print(men)        
+        
         # удаляем все документы коллекции
         #self.mongo.coll.remove({})        
         
@@ -65,8 +68,8 @@ class SvetaEyes():
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
                 self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
             
-            print(len(args))
             args = message.text.split(' ')
+            print(len(args))
             if len(args) < 3 :
                 self.bot.send_message(message.chat.id, 'Формат команды: /add время(14:15) мое напоминание')
             else :
@@ -77,7 +80,7 @@ class SvetaEyes():
                 self.mongo.coll.update({'id': message.chat.id}, {'time': args[1], 'text': text, "status": True})
                 
             for men in self.mongo.coll.find({"id": message.chat.id}):
-                print(men)            
+                print(men)
         
         # Прекращаем слать напоминания
         @self.bot.message_handler(commands=['stop'])
