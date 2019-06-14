@@ -91,7 +91,7 @@ class SvetaEyes():
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
                 self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
                 
-            self.mongo.coll.update({"id": message.chat.id}, {"status": False})
+            self.mongo.coll.update({"id": message.chat.id}, {"$set": {"status": False}})
             
             self.bot.send_message(message.chat.id, 'Отправка напоминаний остановлена.')
             
@@ -130,7 +130,7 @@ class SvetaEyes():
             timezone_str = tz.tzNameAt(message.location.latitude, message.location.longitude)            
             
             timezone = pytz.timezone(timezone_str)
-            self.mongo.coll.update({"id": message.chat.id}, {"timezone": timezone, "timezone_offset": timezone.utcoffset(datetime.datetime.now())})
+            self.mongo.coll.update({"id": message.chat.id}, {"$set": {"timezone": timezone, "timezone_offset": timezone.utcoffset(datetime.datetime.now())}})
             
             for men in self.mongo.coll.find({"id": message.chat.id}):
                 print(men)            
