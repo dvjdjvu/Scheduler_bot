@@ -25,6 +25,7 @@ class SvetaEyes():
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
                 
                 self.bot.send_message(message.chat.id, 'Привет, ты подключился ко мне.')
+                print(message.chat.id, message.timestamp)
                 
                 args = message.text.split(' ')
                 if len(args) == 2 :
