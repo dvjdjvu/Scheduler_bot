@@ -123,6 +123,7 @@ class SvetaEyes():
         # Локация пользователя
         @self.bot.message_handler(content_types=['location'])
         def get_location(message):
+            print('location', message.chat.id)
             ##
             #  Берем временную зону пользователя.
             ##
