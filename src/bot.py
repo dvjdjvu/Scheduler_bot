@@ -64,6 +64,12 @@ class SvetaEyes():
             tz = tzwhere.tzwhere()
             timezone_str = tz.tzNameAt(message.location.latitude, message.location.longitude)            
             
+            timezone = pytz.timezone(timezone_str)
+            print(timezone)
+            dt = datetime.datetime.now()
+            print(dt)
+            print(timezone.utcoffset(dt))
+            
             print(timezone_str)
             
             print(message.location.latitude, message.location.longitude)
