@@ -64,7 +64,7 @@ class SvetaEyes():
                 for i in range(len(args) - 2) :
                     text += args[i] + ' '
                     
-                self.mongo.coll.update({'id': message.chat.id, 'time': args[1], 'text': text, "status": True})
+                self.mongo.coll.update({'id': message.chat.id}, {'time': args[1], 'text': text, "status": True})
         
         # Прекращаем слать напоминания
         @self.bot.message_handler(commands=['stop'])
