@@ -4,6 +4,7 @@
 import sys
 sys.path.append('../token')
 
+import geonames
 import datetime
 from threading import Thread
 import sched, time
@@ -25,7 +26,8 @@ class SvetaEyes():
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
                 
                 self.bot.send_message(message.chat.id, 'Привет, ты подключился ко мне.')
-                
+                self.bot.send_message(message.chat.id, 'Пришли мне свое местоположение, что бы я определил твое время.')
+                '''
                 args = message.text.split(' ')
                 if len(args) == 2 :
                     self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name, 'time': args[1]})
@@ -39,7 +41,7 @@ class SvetaEyes():
                     self.bot.send_message(message.chat.id, 'Я буду напоминать тебе каждый день в {}.'.format(args[1]))
                 else :
                     self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
-                
+                '''
             else :
                 self.bot.send_message(message.chat.id, 'Привет, ты уже подключен ко мне.')
             
@@ -58,6 +60,10 @@ class SvetaEyes():
     
         @self.bot.message_handler(content_types=['location'])
         def get_text(message):
+            geonames_client = geonames.GeonamesClient('demo')
+            geonames_result = geonames_client.find_timezone({'lat': message.location.latitude, 'lng': message.location.longitude})
+            print(geonames_result['timezoneId'])
+            
             print(message.location.latitude, message.location.longitude)
                 
                 
