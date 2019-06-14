@@ -79,6 +79,7 @@ class SvetaEyes():
                     
                 self.mongo.coll.update({'id': message.chat.id}, {'time': args[1], 'text': text, "status": True})
                 
+            print(self.mongo.coll.find({"id": message.chat.id}).count())
             for men in self.mongo.coll.find({"id": message.chat.id}):
                 print(men)
         
