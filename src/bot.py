@@ -22,6 +22,9 @@ class SvetaEyes():
         
         self.threadTimer = Thread(target=self.send_message, args=("Напоминание!",))
         
+        # удаляем все документы коллекции
+        self.mongo.coll.remove({})        
+        
         # Регистрация в системе
         @self.bot.message_handler(commands=['start'])
         def get_start(message):
