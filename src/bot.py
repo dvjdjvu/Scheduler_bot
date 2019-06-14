@@ -13,6 +13,7 @@ import telebot
 import mongo
 import SvetaEyesToken
 import json
+import re
 
 class SvetaEyes():
     
@@ -131,7 +132,7 @@ class SvetaEyes():
             tz = tzwhere.tzwhere()
             timezone_str = tz.tzNameAt(message.location.latitude, message.location.longitude)            
             
-            timezone = json.dumps(pytz.timezone(timezone_str))
+            timezone = re.escape(pytz.timezone(timezone_str))
             print(timezone, timezone.utcoffset(datetime.datetime.now()))
             
             self.mongo.coll.update({"id": message.chat.id}, {"$set": {"timezone": timezone, "timezone_offset": timezone.utcoffset(datetime.datetime.now())}})
