@@ -137,7 +137,7 @@ class SvetaEyes():
             #print(timezone, timezone.utcoffset(datetime.datetime.now()))
             timezone_offset = str(timezone.utcoffset(datetime.datetime.now()))
             
-            self.mongo.coll.update({"id": message.chat.id}, {"$set": {"latitude": message.location.latitude, "longitude": message.location.longitude, "timezone_offset": timezone_offset}})
+            self.mongo.coll.update({"id": message.chat.id}, {"$set": {"latitude": message.location.latitude, "longitude": message.location.longitude, "timezone_offset": timezone_offset, "timezone": timezone}})
             
             for men in self.mongo.coll.find({"id": message.chat.id}):
                 print(men)            
