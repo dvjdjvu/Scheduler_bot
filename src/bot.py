@@ -130,7 +130,7 @@ class SvetaEyes():
             tz = tzwhere.tzwhere()
             timezone_str = tz.tzNameAt(message.location.latitude, message.location.longitude)            
             
-            timezone = pytz.timezone(timezone_str)
+            timezone = pytz.timezone(timezone_str).encode('string-escape')
             print(timezone, timezone.utcoffset(datetime.datetime.now()))
             
             #self.mongo.coll.update({"id": message.chat.id}, {"$set": {"timezone": timezone, "timezone_offset": timezone.utcoffset(datetime.datetime.now())}})
