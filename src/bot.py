@@ -65,10 +65,10 @@ class SvetaEyes():
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
                 self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
             
+            print(len(args))
             args = message.text.split(' ')
             if len(args) < 3 :
                 self.bot.send_message(message.chat.id, 'Формат команды: /add время(14:15) мое напоминание')
-                return
             else :
                 text = ''
                 for i in range(len(args) - 2) :
