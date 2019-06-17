@@ -255,12 +255,12 @@ class Sheduler():
                         else :
                             _time_user = _time
                         
-                        print(_time, _time_user)
+                        #print(_time, _time_user)
                         
                         if _time == _time_user :
-                            self.bot.send_message(men['id'], men.get('text', message))                        
+                            self.bot.send_message(men['id'], event['text'])
                 
-            time.sleep(30)
+            time.sleep(45)
             
             
         
