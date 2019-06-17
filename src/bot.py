@@ -11,14 +11,14 @@ from threading import Thread
 import sched, time
 import telebot
 import mongo
-import SvetaEyesToken
+import ShedCToken
 import json
 import re
 
-class SvetaEyes():
+class ShedC():
     
     def __init__(self, _mongo):
-        self.bot = telebot.TeleBot(SvetaEyesToken.token)
+        self.bot = telebot.TeleBot(ShedCToken.token)
         
         self.mongo = _mongo
         
@@ -29,6 +29,16 @@ class SvetaEyes():
         
         # удаляем все документы коллекции
         #self.mongo.coll.remove({})        
+        
+        # Регистрация в системе
+        @self.bot.message_handler(commands=['help'])
+        def help(message):
+            self.bot.send_message(message.chat.id, '/help - помощь')
+            self.bot.send_message(message.chat.id, '/start - начать работу')
+            self.bot.send_message(message.chat.id, '/add name_event time text - добавить напоминание')
+            self.bot.send_message(message.chat.id, '/on name_event - включить напоминание')
+            self.bot.send_message(message.chat.id, '/off name_event - отключить напоминание')
+            self.bot.send_message(message.chat.id, '/events - список напоминаний')
         
         # Регистрация в системе
         @self.bot.message_handler(commands=['start'])
@@ -44,8 +54,8 @@ class SvetaEyes():
             else :
                 self.bot.send_message(message.chat.id, 'Ты уже подключен.')
                 
-            for men in self.mongo.coll.find({"id": message.chat.id}):
-                print(men)
+            #for men in self.mongo.coll.find({"id": message.chat.id}):
+            #    print(men)
         
         # Добавить напоминание
         @self.bot.message_handler(commands=['add'])
@@ -66,9 +76,6 @@ class SvetaEyes():
                 
                 name = args[1]
                 time = args[2]
-                
-                
-                #self.mongo.coll.update({'id': message.chat.id}, {"$set": {'time': time, 'text': text, "status": True}})
                 
                 for men in self.mongo.coll.find({"id": message.chat.id}):
                     events = men.get('events', [])
@@ -123,7 +130,7 @@ class SvetaEyes():
                     events = men.get('events', [])
                     for event in events:
                         if event['name'] == name :
-                            event['status'] = False 
+                            event['status'] = True 
                             self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
                             
                             self.bot.send_message(message.chat.id, 'Отправка напоминания {} включена.'.format(name))
@@ -152,7 +159,7 @@ class SvetaEyes():
                             event['status'] = False 
                             self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
                             
-                            self.bot.send_message(message.chat.id, 'Отправка напоминания {} остановлена.'.format(name))
+                            self.bot.send_message(message.chat.id, 'Отправка напоминания {} выключена.'.format(name))
                             break
                 
         # Список напоминаний пользователя
@@ -189,7 +196,7 @@ class SvetaEyes():
             
             if self.mongo.coll.find({"id": message.chat.id}).count() :
                 for men in self.mongo.coll.find({"id": message.chat.id}):
-                    self.bot.send_message(message.from_user.id, "Привет ", men.get("name", ''))
+                    self.bot.send_message(message.from_user.id, "Привет {}, используй /help ".format(men.get("first_name", '')))
             else :
                 self.bot.send_message(message.from_user.id, "Ты ко мне не подключен, напиши /start")
     
@@ -231,28 +238,24 @@ class SvetaEyes():
     
     def send_message(self, message) :
         
-        return
-        
         while True:
         
             for men in self.mongo.coll.find():
-                
-                time_user = ''
-                
-                _time = men.get('time', None)
                 timezone_offset = men.get('timezone_offset', None)
-                #print(men, _time, timezone_offset)
                 
-                if _time and timezone_offset:
-                    now = datetime.datetime.now()
+                events = men.get('events', [])
+                for event in events:
+                    _time_user = ''
+                    _time = event.get('time', None)
+                    if _time and timezone_offset:
+                        now = datetime.datetime.now()
+                
+                        _time_user = (now + datetime.timedelta(hours=int(timezone_offset.split(':')[0]), minutes=int(timezone_offset.split(':')[1]))).strftime('%H:%M')
                     
-                    time_user = (now + datetime.timedelta(hours=int(timezone_offset.split(':')[0]), minutes=int(timezone_offset.split(':')[1]))).strftime('%H:%M')
+                        if _time == _time_user :
+                            self.bot.send_message(men['id'], men.get('text', message))                        
                 
-                    print(now, _time, time_user, timezone_offset)
-                    if _time == time_user :
-                        self.bot.send_message(men['id'], men.get('text', message))
-                
-            time.sleep(59)
+            time.sleep(30)
             
             
         
