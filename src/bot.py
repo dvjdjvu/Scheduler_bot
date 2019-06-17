@@ -103,24 +103,61 @@ class SvetaEyes():
             for men in self.mongo.coll.find({"id": message.chat.id}):
                 print(men)
         
-        # Прекращаем слать напоминания
-        @self.bot.message_handler(commands=['stop'])
-        def get_stop(message):
-            print('stop', message.chat.id)
+        # Включаем напоминание по имени.
+        @self.bot.message_handler(commands=['on'])
+        def get_on(message):
+            print('on', message.chat.id)
             
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
-                self.save(message)
+                self.bot.send_message(message.chat.id, 'Вы не зарегистрированы.')
+                return
                 
-            self.mongo.coll.update({"id": message.chat.id}, {"$set": {"status": False}})
+            args = message.text.split(' ')
+            print(len(args))
+            if len(args) <= 1 :
+                self.bot.send_message(message.chat.id, 'Формат команды: /on имя_события')
+            else :
+                name = args[1]
             
-            self.bot.send_message(message.chat.id, 'Отправка напоминаний остановлена.')
+                for men in self.mongo.coll.find({"id": message.chat.id}):
+                    events = men.get('events', [])
+                    for event in events:
+                        if event['name'] == name :
+                            event['status'] = False 
+                            self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
+                            
+                            self.bot.send_message(message.chat.id, 'Отправка напоминания {} включена.'.format(name))
+                            break
+        
+        # Выключаем напоминание по имени.
+        @self.bot.message_handler(commands=['off'])
+        def get_off(message):
+            print('off', message.chat.id)
             
-            for men in self.mongo.coll.find({"id": message.chat.id}):
-                print(men)
+            if not self.mongo.coll.find({"id": message.chat.id}).count() :
+                self.bot.send_message(message.chat.id, 'Вы не зарегистрированы.')
+                return
+                
+            args = message.text.split(' ')
+            print(len(args))
+            if len(args) <= 1 :
+                self.bot.send_message(message.chat.id, 'Формат команды: /off имя_события')
+            else :
+                name = args[1]
+            
+                for men in self.mongo.coll.find({"id": message.chat.id}):
+                    events = men.get('events', [])
+                    for event in events:
+                        if event['name'] == name :
+                            event['status'] = False 
+                            self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
+                            
+                            self.bot.send_message(message.chat.id, 'Отправка напоминания {} остановлена.'.format(name))
+                            break
                 
         # Список напоминаний пользователя
         @self.bot.message_handler(commands=['events'])
-        def get_stop(message):
+        def get_events(message):
             print('events', message.chat.id)
             
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
