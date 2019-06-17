@@ -71,7 +71,7 @@ class SvetaEyes():
                 #self.mongo.coll.update({'id': message.chat.id}, {"$set": {'time': time, 'text': text, "status": True}})
                 
                 for men in self.mongo.coll.find({"id": message.chat.id}):
-                    events = men.get('events', {})
+                    events = men.get('events', [])
                     
                     flag = False
                     # Ищем событие по имени
@@ -126,7 +126,7 @@ class SvetaEyes():
             
             self.bot.send_message(message.chat.id, 'Список событий:')
             for men in self.mongo.coll.find({"id": message.chat.id}):
-                events = men.get('events', {})
+                events = men.get('events', [])
                 for event in events:
                     print(event)
         
