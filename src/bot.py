@@ -131,7 +131,7 @@ class SvetaEyes():
             for men in self.mongo.coll.find({"id": message.chat.id}):
                 events = men.get('events', [])
                 for event in events:
-                    self.bot.send_message(event)
+                    self.bot.send_message(message.chat.id, event)
                     print(event)
         
         # Удаляем информацию из базы
