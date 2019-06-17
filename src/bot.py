@@ -78,6 +78,7 @@ class SvetaEyes():
                     for event in events:
                         print('event', event)
                         if event['name'] == name :
+                            event['name'] = name
                             event['time'] = time
                             event['text'] = text
                             event['status'] = True
@@ -87,6 +88,7 @@ class SvetaEyes():
                     # Создаем новое событие
                     if flag == False :
                         event = {}
+                        event['name'] = name
                         event['time'] = time
                         event['text'] = text
                         event['status'] = True 
