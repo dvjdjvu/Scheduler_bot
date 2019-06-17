@@ -79,7 +79,7 @@ class SvetaEyes():
                         if event['name'] == name :
                             event['time'] = time
                             event['text'] = text
-                            exent['status'] = True
+                            event['status'] = True
                             
                             flag = True
                     
@@ -88,7 +88,7 @@ class SvetaEyes():
                         event = {}
                         event['time'] = time
                         event['text'] = text
-                        exent['status'] = True 
+                        event['status'] = True 
                         
                         events.append(event)
                     
