@@ -76,6 +76,7 @@ class SvetaEyes():
                     flag = False
                     # Ищем событие по имени
                     for event in events:
+                        print('event', event)
                         if event['name'] == name :
                             event['time'] = time
                             event['text'] = text
