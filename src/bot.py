@@ -11,14 +11,14 @@ from threading import Thread
 import sched, time
 import telebot
 import mongo
-import ShedCToken
+import ShedulerToken
 import json
 import re
 
-class ShedC():
+class Sheduler():
     
     def __init__(self, _mongo):
-        self.bot = telebot.TeleBot(ShedCToken.token)
+        self.bot = telebot.TeleBot(ShedulerToken.token)
         
         self.mongo = _mongo
         
