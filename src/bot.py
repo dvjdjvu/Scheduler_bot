@@ -250,8 +250,13 @@ class Sheduler():
                     if _time and timezone_offset:
                         now = datetime.datetime.now()
                 
-                        _time_user = (now + datetime.timedelta(hours=int(timezone_offset.split(':')[0]), minutes=int(timezone_offset.split(':')[1]))).strftime('%H:%M')
-                    
+                        if timezone_offset :
+                            _time_user = (now + datetime.timedelta(hours=int(timezone_offset.split(':')[0]), minutes=int(timezone_offset.split(':')[1]))).strftime('%H:%M')
+                        else :
+                            _time_user = _time
+                        
+                        print(_time, _time_user)
+                        
                         if _time == _time_user :
                             self.bot.send_message(men['id'], men.get('text', message))                        
                 
