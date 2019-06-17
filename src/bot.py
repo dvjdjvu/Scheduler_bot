@@ -40,24 +40,9 @@ class SvetaEyes():
                 self.bot.send_message(message.chat.id, 'Привет, ты подключился ко мне.')
                 self.bot.send_message(message.chat.id, 'Пришли мне свое местоположение, что бы я узнал твое время.')
                 
-                self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
-                '''
-                args = message.text.split(' ')
-                if len(args) == 2 :
-                    self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name, 'time': args[1]})
-                elif len(args) > 2 :
-                    text = ''
-                    for i in range(len(args) - 2) :
-                        text += args[i] + ' '
-                        
-                    self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name, 'time': args[1], 'text': text})
-                    
-                    self.bot.send_message(message.chat.id, 'Я буду напоминать тебе каждый день в {}.'.format(args[1]))
-                else :
-                    self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
-                '''
+                self.save(message)
             else :
-                self.bot.send_message(message.chat.id, 'Привет ты уже подключен.')
+                self.bot.send_message(message.chat.id, 'Ты уже подключен.')
                 
             for men in self.mongo.coll.find({"id": message.chat.id}):
                 print(men)
@@ -68,18 +53,48 @@ class SvetaEyes():
             print('add', message.chat.id)
             
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
-                self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
+                self.save(message)
             
             args = message.text.split(' ')
             print(len(args))
-            if len(args) < 3 :
-                self.bot.send_message(message.chat.id, 'Формат команды: /add время(14:15) мое напоминание')
+            if len(args) <= 3 :
+                self.bot.send_message(message.chat.id, 'Формат команды: /add имя_события время(14:15) напоминание')
             else :
                 text = ''
-                for i in range(len(args) - 2) :
-                    text += args[i + 2] + ' '
+                for i in range(len(args) - 3) :
+                    text += args[i + 3] + ' '
+                
+                name = args[1]
+                time = args[2]
+                
+                
+                #self.mongo.coll.update({'id': message.chat.id}, {"$set": {'time': time, 'text': text, "status": True}})
+                
+                for men in self.mongo.coll.find({"id": message.chat.id}):
+                    events = men.get('events', {})
                     
-                self.mongo.coll.update({'id': message.chat.id}, {"$set": {'time': args[1], 'text': text, "status": True}})
+                    flag = False
+                    # Ищем событие по имени
+                    for event in events:
+                        if event['name'] == name :
+                            event['time'] = time
+                            event['text'] = text
+                            exent['status'] = True
+                            
+                            flag = True
+                    
+                    # Создаем новое событие
+                    if flag == False :
+                        event = {}
+                        event['time'] = time
+                        event['text'] = text
+                        exent['status'] = True 
+                        
+                        events.append(event)
+                    
+                    print(events)
+                        
+                    self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
                 
             print(self.mongo.coll.find({"id": message.chat.id}).count())
             for men in self.mongo.coll.find({"id": message.chat.id}):
@@ -91,14 +106,29 @@ class SvetaEyes():
             print('stop', message.chat.id)
             
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
-                self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name})
+                self.save(message)
                 
             self.mongo.coll.update({"id": message.chat.id}, {"$set": {"status": False}})
             
             self.bot.send_message(message.chat.id, 'Отправка напоминаний остановлена.')
             
             for men in self.mongo.coll.find({"id": message.chat.id}):
-                print(men)            
+                print(men)
+                
+        # Список напоминаний пользователя
+        @self.bot.message_handler(commands=['events'])
+        def get_stop(message):
+            print('events', message.chat.id)
+            
+            if not self.mongo.coll.find({"id": message.chat.id}).count() :
+                self.bot.send_message(message.chat.id, 'Вы не зарегистрированы.')
+                return
+            
+            self.bot.send_message(message.chat.id, 'Список событий:')
+            for men in self.mongo.coll.find({"id": message.chat.id}):
+                events = men.get('events', {})
+                for event in events:
+                    print(event)
         
         # Удаляем информацию из базы
         @self.bot.message_handler(commands=['del'])
@@ -154,7 +184,10 @@ class SvetaEyes():
         self.threadTimer.start()
         
         self.bot.polling(none_stop=True, interval=0)
-        
+    
+    def save(self, message):
+        self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name, "status": True})
+    
     def send_message(self, message) :
         
         while True:
