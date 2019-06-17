@@ -190,6 +190,8 @@ class SvetaEyes():
     
     def send_message(self, message) :
         
+        return
+        
         while True:
         
             for men in self.mongo.coll.find():
