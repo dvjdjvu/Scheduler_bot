@@ -59,7 +59,7 @@ class Sheduler():
             keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
             button_geo = types.KeyboardButton(text="Отправить местоположение", request_location=True)
             keyboard.add(button_geo)
-            bot.send_message(message.chat.id, "Привет, нажми на кнопку и передай мне свое местоположение", reply_markup=keyboard)
+            self.bot.send_message(message.chat.id, "Привет, нажми на кнопку и передай мне свое местоположение", reply_markup=keyboard)
                 
             #for men in self.mongo.coll.find({"id": message.chat.id}):
             #    print(men)
