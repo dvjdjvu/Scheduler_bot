@@ -30,7 +30,7 @@ class Sheduler():
         # удаляем все документы коллекции
         #self.mongo.coll.remove({})        
         
-        # Регистрация в системе
+        # Помощь
         @self.bot.message_handler(commands=['help'])
         def help(message):
             self.bot.send_message(message.chat.id, '/help - помощь')
@@ -49,10 +49,15 @@ class Sheduler():
                 
                 self.bot.send_message(message.chat.id, 'Привет, ты подключился ко мне.')
                 self.bot.send_message(message.chat.id, 'Пришли мне свое местоположение, что бы я узнал твое время.')
+                self.bot.send_message(message.chat.id, 'Для помощи используй /help')
                 
                 self.save(message)
             else :
                 self.bot.send_message(message.chat.id, 'Ты уже подключен.')
+                
+            #location_keyboard = KeyboardButton(text="send_location",  request_location=True)
+            reply_markup = telegram.ReplyKeyboardMarkup([[telegram.KeyboardButton('Share contact', request_location=True)]])
+            self.bot.send_message(message.chat.id, 'Example', reply_markup=reply_markup)
                 
             #for men in self.mongo.coll.find({"id": message.chat.id}):
             #    print(men)
@@ -217,8 +222,10 @@ class Sheduler():
             
             self.mongo.coll.update({"id": message.chat.id}, {"$set": {"latitude": message.location.latitude, "longitude": message.location.longitude, "timezone_offset": timezone_offset}})
             
-            for men in self.mongo.coll.find({"id": message.chat.id}):
-                print(men)            
+            self.bot.send_message(message.from_user.id, "Ваше местоположение и временная зона: {} {}".format(timezone_str, timezone))
+            
+            #for men in self.mongo.coll.find({"id": message.chat.id}):
+            #    print(men)            
             
                 
     def __del__(self):
@@ -261,11 +268,3 @@ class Sheduler():
                             self.bot.send_message(men['id'], event['text'])
                 
             time.sleep(45)
-            
-            
-        
-    
-    
-    
-            
-            
