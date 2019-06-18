@@ -181,9 +181,12 @@ class Sheduler():
             self.bot.send_message(message.chat.id, 'Список событий:')
             for men in self.mongo.coll.find({"id": message.chat.id}):
                 events = men.get('events', [])
+                _str = ""
                 for event in events:
-                    self.bot.send_message(message.chat.id, str(event))
+                    str += "'{}' Время: '{}' Сообщение: '{}'\n".format(event['time'], event['name'], event['text'])
+                    #self.bot.send_message(message.chat.id, "'{}' Время: '{}' Сообщение: '{}'".format(event['time'], event['name'], event['text']))
                     print(event)
+                self.bot.send_message(message.chat.id, _str[:-1])
         
         # Удаляем информацию из базы
         @self.bot.message_handler(commands=['del'])
