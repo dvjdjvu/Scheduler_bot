@@ -34,14 +34,16 @@ class Sheduler():
         # Помощь
         @self.bot.message_handler(commands=['help'])
         def help(message):
-            self.bot.send_message(message.chat.id, '/help - помощь')
-            self.bot.send_message(message.chat.id, '/start - начать работу')
-            self.bot.send_message(message.chat.id, '/add name_event time text - добавить напоминание')
-            self.bot.send_message(message.chat.id, '/on name_event - включить напоминание')
-            self.bot.send_message(message.chat.id, '/off name_event - отключить напоминание')
-            self.bot.send_message(message.chat.id, '/events - список напоминаний')
-            self.bot.send_message(message.chat.id, '/geo - взять локацию, для уточнения времени')
+            _str = ''
+            _str += '/help - помощь\n'
+            _str += '/start - начать работу\n'
+            _str += '/add name_event time text - добавить напоминание\n'
+            _str += '/on name_event - включить напоминание\n'
+            _str += '/off name_event - отключить напоминание\n'
+            _str += '/events - список напоминаний\n'
+            _str += '/geo - взять локацию, для уточнения времени\n'
             
+            self.bot.send_message(message.chat.id, _str)
         
         # Регистрация в системе
         @self.bot.message_handler(commands=['start'])
@@ -183,8 +185,7 @@ class Sheduler():
                 events = men.get('events', [])
                 _str = ""
                 for event in events:
-                    _str += "'{}' Время: '{}' Сообщение: '{}'\n".format(event['time'], event['name'], event['text'])
-                    #self.bot.send_message(message.chat.id, "'{}' Время: '{}' Сообщение: '{}'".format(event['time'], event['name'], event['text']))
+                    _str += "'{}' Время: '{}' Сообщение: '{}'\n".format(event['name'], event['time'], event['text'])
                     print(event)
                 self.bot.send_message(message.chat.id, _str[:-1])
         
