@@ -197,6 +197,12 @@ class Sheduler():
             for men in self.mongo.coll.find({"id": message.chat.id}):
                 print(men)            
         
+        # Локация пользователя
+        @self.bot.message_handler(commands=['geo'])
+        def get_geo(message):
+            print('geo', message.chat.id)
+            self.geoGet(message)
+        
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
             print('text', message.chat.id)
@@ -206,12 +212,6 @@ class Sheduler():
                     self.bot.send_message(message.from_user.id, "Привет {}, используй /help ".format(men.get("first_name", '')))
             else :
                 self.bot.send_message(message.from_user.id, "Ты ко мне не подключен, напиши /start")
-    
-        # Локация пользователя
-        @self.bot.message_handler(content_types=['geo'])
-        def get_geo(message):
-            print('geo', message.chat.id)
-            self.geoGet(message)
     
         # Локация пользователя
         @self.bot.message_handler(content_types=['location'])
