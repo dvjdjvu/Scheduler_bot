@@ -50,18 +50,16 @@ class Sheduler():
             
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
                 
-                self.bot.send_message(message.chat.id, 'Привет, ты подключился ко мне.')
+                self.bot.send_message(message.chat.id, 'Привет, ты подключился ко мне. Я бот будильник!')
                 self.bot.send_message(message.chat.id, 'Для помощи используй /help')
                 
                 self.save(message)
             else :
                 self.bot.send_message(message.chat.id, 'Ты уже подключен.')
                 
-                if not men.get('timezone_offset', None) :
-                    self.geoGet(message)
-                
-            #for men in self.mongo.coll.find({"id": message.chat.id}):
-            #    print(men)
+                for men in self.mongo.coll.find({"id": message.chat.id}):
+                    if not men.get('timezone_offset', None) :
+                        self.geoGet(message)
         
         # Добавить напоминание
         @self.bot.message_handler(commands=['add'])
