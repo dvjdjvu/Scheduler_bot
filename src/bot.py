@@ -10,6 +10,7 @@ import datetime
 from threading import Thread
 import sched, time
 import telebot
+from telebot import types
 import mongo
 import ShedulerToken
 import json
@@ -55,9 +56,10 @@ class Sheduler():
             else :
                 self.bot.send_message(message.chat.id, 'Ты уже подключен.')
                 
-            #location_keyboard = KeyboardButton(text="send_location",  request_location=True)
-            reply_markup = telebot.ReplyKeyboardMarkup([[telebot.KeyboardButton('Share contact', request_location=True)]])
-            self.bot.send_message(message.chat.id, 'Example', reply_markup=reply_markup)
+            keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+            button_geo = types.KeyboardButton(text="Отправить местоположение", request_location=True)
+            keyboard.add(button_geo)
+            bot.send_message(message.chat.id, "Привет, нажми на кнопку и передай мне свое местоположение", reply_markup=keyboard)
                 
             #for men in self.mongo.coll.find({"id": message.chat.id}):
             #    print(men)
