@@ -40,6 +40,8 @@ class Sheduler():
             self.bot.send_message(message.chat.id, '/on name_event - включить напоминание')
             self.bot.send_message(message.chat.id, '/off name_event - отключить напоминание')
             self.bot.send_message(message.chat.id, '/events - список напоминаний')
+            self.bot.send_message(message.chat.id, '/geo - взять локацию, для уточнения времени')
+            
         
         # Регистрация в системе
         @self.bot.message_handler(commands=['start'])
@@ -49,17 +51,14 @@ class Sheduler():
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
                 
                 self.bot.send_message(message.chat.id, 'Привет, ты подключился ко мне.')
-                self.bot.send_message(message.chat.id, 'Пришли мне свое местоположение, что бы я узнал твое время.')
                 self.bot.send_message(message.chat.id, 'Для помощи используй /help')
                 
                 self.save(message)
             else :
                 self.bot.send_message(message.chat.id, 'Ты уже подключен.')
                 
-            keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
-            button_geo = types.KeyboardButton(text="Отправить местоположение", request_location=True)
-            keyboard.add(button_geo)
-            self.bot.send_message(message.chat.id, "Привет, нажми на кнопку и передай мне свое местоположение", reply_markup=keyboard)
+                if not men.get('timezone_offset', None) :
+                    self.getGeo()
                 
             #for men in self.mongo.coll.find({"id": message.chat.id}):
             #    print(men)
@@ -85,6 +84,9 @@ class Sheduler():
                 time = args[2]
                 
                 for men in self.mongo.coll.find({"id": message.chat.id}):
+                    if not men.get('timezone_offset', None) :
+                        self.bot.send_message(message.chat.id, 'Передайте свою локацию для уточнения вашей временной зоны')
+                    
                     events = men.get('events', [])
                     
                     flag = False
@@ -208,6 +210,11 @@ class Sheduler():
                 self.bot.send_message(message.from_user.id, "Ты ко мне не подключен, напиши /start")
     
         # Локация пользователя
+        @self.bot.message_handler(content_types=['geo'])
+        def get_geo(message):
+            self.geoGet()
+    
+        # Локация пользователя
         @self.bot.message_handler(content_types=['location'])
         def get_location(message):
             print('location', message.chat.id)
@@ -224,7 +231,7 @@ class Sheduler():
             
             self.mongo.coll.update({"id": message.chat.id}, {"$set": {"latitude": message.location.latitude, "longitude": message.location.longitude, "timezone_offset": timezone_offset}})
             
-            self.bot.send_message(message.from_user.id, "Ваше местоположение и временная зона: {} {}".format(timezone_str, timezone))
+            self.bot.send_message(message.from_user.id, "Ваше местоположение и временная зона: {} {}".format(timezone_str, timezone_offset))
             
             #for men in self.mongo.coll.find({"id": message.chat.id}):
             #    print(men)            
@@ -232,10 +239,7 @@ class Sheduler():
                 
     def __del__(self):
         self.threadTimer.do_run = False
-        
         self.threadTimer.join()
-        
-        pass
     
     def run(self):
         self.threadTimer.start()
@@ -244,6 +248,14 @@ class Sheduler():
     
     def save(self, message):
         self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name, "status": True})
+        
+        self.geoGet()
+    
+    def geoGet(self):
+        keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+        button_geo = types.KeyboardButton(text="Отправить местоположение", request_location=True)
+        keyboard.add(button_geo)
+        self.bot.send_message(message.chat.id, "Привет, нажми на кнопку и передай мне свое местоположение для уточнения твоего времени", reply_markup=keyboard)
     
     def send_message(self, message) :
         
