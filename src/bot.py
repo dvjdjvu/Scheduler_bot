@@ -58,7 +58,7 @@ class Sheduler():
                 self.bot.send_message(message.chat.id, 'Ты уже подключен.')
                 
                 if not men.get('timezone_offset', None) :
-                    self.geoGet()
+                    self.geoGet(message)
                 
             #for men in self.mongo.coll.find({"id": message.chat.id}):
             #    print(men)
@@ -212,7 +212,7 @@ class Sheduler():
         # Локация пользователя
         @self.bot.message_handler(content_types=['geo'])
         def get_geo(message):
-            self.geoGet()
+            self.geoGet(message)
     
         # Локация пользователя
         @self.bot.message_handler(content_types=['location'])
@@ -249,9 +249,9 @@ class Sheduler():
     def save(self, message):
         self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name, "status": True})
         
-        self.geoGet()
+        self.geoGet(message)
     
-    def geoGet(self):
+    def geoGet(self, message):
         keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
         button_geo = types.KeyboardButton(text="Отправить местоположение", request_location=True)
         keyboard.add(button_geo)
