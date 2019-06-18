@@ -56,7 +56,7 @@ class Sheduler():
                 self.bot.send_message(message.chat.id, 'Ты уже подключен.')
                 
             #location_keyboard = KeyboardButton(text="send_location",  request_location=True)
-            reply_markup = telegram.ReplyKeyboardMarkup([[telegram.KeyboardButton('Share contact', request_location=True)]])
+            reply_markup = telebot.ReplyKeyboardMarkup([[telebot.KeyboardButton('Share contact', request_location=True)]])
             self.bot.send_message(message.chat.id, 'Example', reply_markup=reply_markup)
                 
             #for men in self.mongo.coll.find({"id": message.chat.id}):
