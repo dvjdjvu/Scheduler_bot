@@ -58,7 +58,7 @@ class Sheduler():
                 self.bot.send_message(message.chat.id, 'Ты уже подключен.')
                 
                 if not men.get('timezone_offset', None) :
-                    self.getGeo()
+                    self.geoGet()
                 
             #for men in self.mongo.coll.find({"id": message.chat.id}):
             #    print(men)
