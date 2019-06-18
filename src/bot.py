@@ -183,7 +183,7 @@ class Sheduler():
                 events = men.get('events', [])
                 _str = ""
                 for event in events:
-                    str += "'{}' Время: '{}' Сообщение: '{}'\n".format(event['time'], event['name'], event['text'])
+                    _str += "'{}' Время: '{}' Сообщение: '{}'\n".format(event['time'], event['name'], event['text'])
                     #self.bot.send_message(message.chat.id, "'{}' Время: '{}' Сообщение: '{}'".format(event['time'], event['name'], event['text']))
                     print(event)
                 self.bot.send_message(message.chat.id, _str[:-1])
