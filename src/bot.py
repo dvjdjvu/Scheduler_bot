@@ -40,7 +40,7 @@ class Sheduler():
             self.bot.send_message(message.chat.id, '/on name_event - включить напоминание')
             self.bot.send_message(message.chat.id, '/off name_event - отключить напоминание')
             self.bot.send_message(message.chat.id, '/events - список напоминаний')
-            self.bot.send_message(message.chat.id, '/geo - взять локацию, для уточнения времени')
+            self.bot.send_message(message.chat.id, '/time - взять локацию, для уточнения времени')
             
         
         # Регистрация в системе
@@ -208,8 +208,8 @@ class Sheduler():
                 self.bot.send_message(message.from_user.id, "Ты ко мне не подключен, напиши /start")
     
         # Локация пользователя
-        @self.bot.message_handler(content_types=['geo'])
-        def get_geo(message):
+        @self.bot.message_handler(content_types=['time'])
+        def get_time(message):
             self.geoGet(message)
     
         # Локация пользователя
