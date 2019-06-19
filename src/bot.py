@@ -236,7 +236,7 @@ class Sheduler():
                 self.bot.send_message(message.chat.id, 'Вы не зарегистрированы.')
                 return
             
-            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+            markup = types.ReplyKeyboardMarkup(one_time_keyboard=False)
             
             for men in self.mongo.coll.find({"id": message.chat.id}):
                 events = men.get('events', [])
