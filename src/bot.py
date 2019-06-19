@@ -214,7 +214,7 @@ class Sheduler():
             chat_id = message.from_user.id
             date = (now.year,now.month)
             
-            markup = create_calendar(now.year, now.month)
+            markup = telegramcalendar.create_calendar(now.year, now.month)
             self.bot.send_message(message.from_user.id, "Пожалйста, выберите дату", reply_markup=markup)
         
         @self.bot.message_handler(content_types=['text'])
