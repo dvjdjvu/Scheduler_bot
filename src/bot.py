@@ -251,7 +251,7 @@ class Sheduler():
             for men in self.mongo.coll.find({"id": message.chat.id}):
                 events = men.get('events', [])
                 for event in events:
-                    button = types.InlineKeyboardButton(text=event['name'], callback_data={'type': 'event','event': event['name']})
+                    button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'type': 'event','event': event['name']}))
                     markup.add(button)
                     
             self.bot.send_message(chat_id=message.chat.id, text='Ваши события', reply_markup=markup)
