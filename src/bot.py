@@ -249,13 +249,13 @@ class Sheduler():
         @self.bot.message_handler(commands=['ss'])
         def start(message):
             markup = types.InlineKeyboardMarkup()
-            button_Monday = types.InlineKeyboardButton(text='Выбран понедельник', callback_data='Понедельник')
-            button_Tuesday = types.InlineKeyboardButton(text='Выбран вторник', callback_data='Вторник')
-            button_Wednesday = types.InlineKeyboardButton(text='Выбрана среда', callback_data='Среда')
-            button_Thursday = types.InlineKeyboardButton(text='Выбран четверг', callback_data='Четверг')
-            button_Friday = types.InlineKeyboardButton(text='Выбрана пятница', callback_data='Пятница')
-            button_Saturday = types.InlineKeyboardButton(text='Выбрана суббота', callback_data='Суббота')
-            button_Sunday = types.InlineKeyboardButton(text='Выбрано воскресенье', callback_data='Воскресенье')
+            button_Monday = types.InlineKeyboardButton(text='Понедельник', callback_data='Понедельник')
+            button_Tuesday = types.InlineKeyboardButton(text='Вторник', callback_data='Вторник')
+            button_Wednesday = types.InlineKeyboardButton(text='Среда', callback_data='Среда')
+            button_Thursday = types.InlineKeyboardButton(text='Четверг', callback_data='Четверг')
+            button_Friday = types.InlineKeyboardButton(text='Пятница', callback_data='Пятница')
+            button_Saturday = types.InlineKeyboardButton(text='Суббота', callback_data='Суббота')
+            button_Sunday = types.InlineKeyboardButton(text='Воскресенье', callback_data='Воскресенье')
             markup.add(button_Monday, button_Tuesday, button_Wednesday)
             markup.add(button_Thursday, button_Friday)
             markup.add(button_Saturday, button_Sunday)
@@ -263,8 +263,7 @@ class Sheduler():
         
         @self.bot.callback_query_handler(func=lambda call: True)
         def query_handler(call):
-            if call.data == 'add':
-                self.bot.answer_callback_query(callback_query_id=call.id, text='Hello world')        
+            self.bot.answer_callback_query(callback_query_id=call.id, text=call.data)        
         
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
