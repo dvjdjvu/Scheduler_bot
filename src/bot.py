@@ -236,17 +236,28 @@ class Sheduler():
                 self.bot.send_message(message.chat.id, 'Вы не зарегистрированы.')
                 return
             
-            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, selective=True)
+            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
             
             for men in self.mongo.coll.find({"id": message.chat.id}):
                 events = men.get('events', [])
-                _str = "Список событий:\n"
                 for event in events:
                     markup.add(event['name']) #Имена кнопок
             
             msg = self.bot.reply_to(message, 'Events:', reply_markup=markup)
             self.bot.register_next_step_handler(msg, self.process_step)
-            
+        
+        @self.bot.message_handler(commands=['ss'])
+        def start(message):
+            markup = telebot.types.InlineKeyboardMarkup()
+            button = telebot.types.InlineKeyboardButton(text='CLick me', callback_data='add')
+            markup.add(button)
+            bot.send_message(chat_id=message.chat.id, text='Some text', reply_markup=markup)
+        
+        @self.bot.callback_query_handler(func=lambda call: True)
+        def query_handler(call):
+            if call.data == 'add':
+                bot.answer_callback_query(callback_query_id=call.id, text='Hello world')        
+        
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
             print('text', message.chat.id)
@@ -255,7 +266,7 @@ class Sheduler():
                 for men in self.mongo.coll.find({"id": message.chat.id}):
                     self.bot.send_message(message.from_user.id, "Привет {}, используй /help ".format(men.get("first_name", '')))
             else :
-                self.bot.send_message(message.from_user.id, "Ты ко мне не п        одключен, напиши /start")
+                self.bot.send_message(message.from_user.id, "Ты ко мне не подключен, напиши /start")
           
     def __del__(self):
         self.threadTimer.do_run = False
