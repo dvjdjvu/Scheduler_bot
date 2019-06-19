@@ -213,7 +213,7 @@ class Sheduler():
             now = datetime.datetime.now() #Текущая дата
             chat_id = message.from_user.id
             date = (now.year,now.month)
-            current_shown_dates[chat_id] = date #Сохраним текущую дату в словарь
+            
             markup = create_calendar(now.year, now.month)
             self.bot.send_message(message.from_user.id, "Пожалйста, выберите дату", reply_markup=markup)
         
