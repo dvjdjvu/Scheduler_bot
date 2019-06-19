@@ -207,6 +207,16 @@ class Sheduler():
             print('geo', message.chat.id)
             self.geoGet(message)
         
+        @self.bot.message_handler(commands=['calendar'])
+        def get_calendar(message):
+            print('calendar', message.chat.id)
+            now = datetime.datetime.now() #Текущая дата
+            chat_id = message.from_user.id
+            date = (now.year,now.month)
+            current_shown_dates[chat_id] = date #Сохраним текущую дату в словарь
+            markup = create_calendar(now.year, now.month)
+            self.bot.send_message(message.from_user.id, "Пожалйста, выберите дату", reply_markup=markup)
+        
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
             print('text', message.chat.id)
@@ -237,16 +247,7 @@ class Sheduler():
             self.bot.send_message(message.from_user.id, "Ваше местоположение и временная зона: {} {}".format(timezone_str, timezone_offset))
             
             #for men in self.mongo.coll.find({"id": message.chat.id}):
-            #    print(men)            
-            
-        @self.bot.message_handler(commands=['calendar'])
-        def get_calendar(message):
-            now = datetime.datetime.now() #Текущая дата
-            chat_id = message.from_user.id
-            date = (now.year,now.month)
-            current_shown_dates[chat_id] = date #Сохраним текущую дату в словарь
-            markup = create_calendar(now.year,now.month)
-            self.bot.send_message(message.from_user.id, "Пожалйста, выберите дату", reply_markup=markup)        
+            #    print(men)
                 
     def __del__(self):
         self.threadTimer.do_run = False
