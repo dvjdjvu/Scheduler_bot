@@ -249,9 +249,17 @@ class Sheduler():
         @self.bot.message_handler(commands=['ss'])
         def start(message):
             markup = types.InlineKeyboardMarkup()
-            button = types.InlineKeyboardButton(text='CLick me', callback_data='add')
-            markup.add(button)
-            self.bot.send_message(chat_id=message.chat.id, text='Some text', reply_markup=markup)
+            button_Monday = types.InlineKeyboardButton(text='Выбран понедельник', callback_data='Понедельник')
+            button_Tuesday = types.InlineKeyboardButton(text='Выбран вторник', callback_data='Вторник')
+            button_Wednesday = types.InlineKeyboardButton(text='Выбрана среда', callback_data='Среда')
+            button_Thursday = types.InlineKeyboardButton(text='Выбран четверг', callback_data='Четверг')
+            button_Friday = types.InlineKeyboardButton(text='Выбрана пятница', callback_data='Пятница')
+            button_Saturday = types.InlineKeyboardButton(text='Выбрана суббота', callback_data='Суббота')
+            button_Sunday = types.InlineKeyboardButton(text='Выбрано воскресенье', callback_data='Воскресенье')
+            markup.add(button_Monday, button_Tuesday, button_Wednesday)
+            markup.add(button_Thursday, button_Friday)
+            markup.add(button_Saturday, button_Sunday)
+            self.bot.send_message(chat_id=message.chat.id, text='Выберите дни недели напоминания', reply_markup=markup)
         
         @self.bot.callback_query_handler(func=lambda call: True)
         def query_handler(call):
