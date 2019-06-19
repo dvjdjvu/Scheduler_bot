@@ -205,16 +205,6 @@ class Sheduler():
         def get_geo(message):
             print('geo', message.chat.id)
             self.geoGet(message)
-        
-        @self.bot.message_handler(content_types=['text'])
-        def get_text(message):
-            print('text', message.chat.id)
-            
-            if self.mongo.coll.find({"id": message.chat.id}).count() :
-                for men in self.mongo.coll.find({"id": message.chat.id}):
-                    self.bot.send_message(message.from_user.id, "Привет {}, используй /help ".format(men.get("first_name", '')))
-            else :
-                self.bot.send_message(message.from_user.id, "Ты ко мне не подключен, напиши /start")
     
         # Локация пользователя
         @self.bot.message_handler(content_types=['location'])
@@ -240,10 +230,22 @@ class Sheduler():
         
         @self.bot.message_handler(commands=['days'])
         def get_days(message):
+            print('days', message.chat.id)
+            
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
             markup.add('1', '2') #Имена кнопок
             msg = bot.reply_to(message, 'Test text', reply_markup=markup)
             bot.register_next_step_handler(msg, process_step)
+            
+        @self.bot.message_handler(content_types=['text'])
+        def get_text(message):
+            print('text', message.chat.id)
+            
+            if self.mongo.coll.find({"id": message.chat.id}).count() :
+                for men in self.mongo.coll.find({"id": message.chat.id}):
+                    self.bot.send_message(message.from_user.id, "Привет {}, используй /help ".format(men.get("first_name", '')))
+            else :
+                self.bot.send_message(message.from_user.id, "Ты ко мне не п        одключен, напиши /start")
           
     def __del__(self):
         self.threadTimer.do_run = False
