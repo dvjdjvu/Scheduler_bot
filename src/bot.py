@@ -253,6 +253,8 @@ class Sheduler():
                 for event in events:
                     button = types.InlineKeyboardButton(text=event['name'], callback_data=event['name'])
                     markup.add(button)
+                    
+            self.bot.send_message(chat_id=message.chat.id, text='Ваши события', reply_markup=markup)
             
         @self.bot.message_handler(commands=['ss'])
         def start(message):
