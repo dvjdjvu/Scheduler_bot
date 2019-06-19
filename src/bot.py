@@ -235,7 +235,7 @@ class Sheduler():
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
             markup.add('1', '2') #Имена кнопок
             msg = bot.reply_to(message, 'Test text', reply_markup=markup)
-            bot.register_next_step_handler(msg, process_step)
+            self.bot.register_next_step_handler(msg, process_step)
             
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
