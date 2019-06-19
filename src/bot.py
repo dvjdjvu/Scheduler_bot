@@ -232,9 +232,19 @@ class Sheduler():
         def get_days(message):
             print('days', message.chat.id)
             
+            if not self.mongo.coll.find({"id": message.chat.id}).count() :
+                self.bot.send_message(message.chat.id, 'Вы не зарегистрированы.')
+                return
+            
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-            markup.add('1', '2') #Имена кнопок
-            msg = self.bot.reply_to(message, 'Test text', reply_markup=markup)
+            
+            for men in self.mongo.coll.find({"id": message.chat.id}):
+                events = men.get('events', [])
+                _str = "Список событий:\n"
+                for event in events:
+                    markup.add(event['name']) #Имена кнопок
+            
+            msg = self.bot.reply_to(message, 'Events:', reply_markup=markup)
             self.bot.register_next_step_handler(msg, self.process_step)
             
         @self.bot.message_handler(content_types=['text'])
