@@ -11,7 +11,6 @@ from threading import Thread
 import sched, time
 import telebot
 from telebot import types
-import telegramcalendar
 import mongo
 import ShedulerToken
 import json
@@ -206,16 +205,6 @@ class Sheduler():
         def get_geo(message):
             print('geo', message.chat.id)
             self.geoGet(message)
-        
-        @self.bot.message_handler(commands=['calendar'])
-        def get_calendar(message):
-            print('calendar', message.chat.id)
-            now = datetime.datetime.now() #Текущая дата
-            chat_id = message.from_user.id
-            date = (now.year,now.month)
-            
-            markup = telegramcalendar.create_calendar(now.year, now.month)
-            self.bot.send_message(message.from_user.id, "Пожалйста, выберите дату", reply_markup=markup)
         
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
