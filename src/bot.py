@@ -275,9 +275,10 @@ class Sheduler():
         
         @self.bot.callback_query_handler(func=lambda call: True)
         def query_handler(call):
-            #if call.data['type'] == 'event' :
-            #    print(call.data['event'])
-            print(call.data)
+            call.data = json.loads(call.data)
+            
+            if call.data['type'] == 'event' :
+                print(call.data['event'])
             
             #self.bot.answer_callback_query(callback_query_id=call.id, text=call.data)        
         
