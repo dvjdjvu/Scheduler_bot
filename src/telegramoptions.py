@@ -4,7 +4,7 @@
 # grcanosa https://github.com/grcanosa
 #
 
-from telebot import *
+from telegram import *
 
 def create_options_keyboard(options, cancel_msg):
     """

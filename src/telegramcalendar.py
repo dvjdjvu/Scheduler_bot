@@ -8,7 +8,7 @@ Base methods for calendar keyboard creation and processing.
 """
 
 
-from telebot import *
+from telegram import *
 import datetime
 import calendar
 
