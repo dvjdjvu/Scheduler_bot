@@ -11,6 +11,7 @@ from threading import Thread
 import sched, time
 import telebot
 from telebot import types
+import telegramcalendar
 import mongo
 import ShedulerToken
 import json
@@ -180,10 +181,9 @@ class Sheduler():
                 self.bot.send_message(message.chat.id, 'Вы не зарегистрированы.')
                 return
             
-            self.bot.send_message(message.chat.id, 'Список событий:')
             for men in self.mongo.coll.find({"id": message.chat.id}):
                 events = men.get('events', [])
-                _str = ""
+                _str = "Список событий:\n"
                 for event in events:
                     _str += "'{}' Время: '{}' Сообщение: '{}'\n".format(event['name'], event['time'], event['text'])
                     print(event)
@@ -239,6 +239,14 @@ class Sheduler():
             #for men in self.mongo.coll.find({"id": message.chat.id}):
             #    print(men)            
             
+        @bot.message_handler(commands=['calendar'])
+        def get_calendar(message):
+            now = datetime.datetime.now() #Текущая дата
+            chat_id = message.from_user.id
+            date = (now.year,now.month)
+            current_shown_dates[chat_id] = date #Сохраним текущую дату в словарь
+            markup = create_calendar(now.year,now.month)
+            self.bot.send_message(message.from_user.id, "Пожалйста, выберите дату", reply_markup=markup)        
                 
     def __del__(self):
         self.threadTimer.do_run = False
