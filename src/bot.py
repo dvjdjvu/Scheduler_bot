@@ -239,7 +239,7 @@ class Sheduler():
             #for men in self.mongo.coll.find({"id": message.chat.id}):
             #    print(men)            
             
-        @bot.message_handler(commands=['calendar'])
+        @self.bot.message_handler(commands=['calendar'])
         def get_calendar(message):
             now = datetime.datetime.now() #Текущая дата
             chat_id = message.from_user.id
