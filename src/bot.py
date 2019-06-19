@@ -251,6 +251,14 @@ class Sheduler():
         self.threadTimer.do_run = False
         self.threadTimer.join()
     
+    def process_step(message):
+        chat_id = message.chat.id
+        print(message.text)
+        if message.text == '1':
+            pass
+        else:
+            pass
+    
     def run(self):
         self.threadTimer.start()
         
