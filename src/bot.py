@@ -251,7 +251,7 @@ class Sheduler():
             for men in self.mongo.coll.find({"id": message.chat.id}):
                 events = men.get('events', [])
                 for event in events:
-                    button = types.InlineKeyboardButton(text=event['name'], callback_data=event['name'])
+                    button = types.InlineKeyboardButton(text=event['name'], callback_data={'type': 'event','event': event['name']})
                     markup.add(button)
                     
             self.bot.send_message(chat_id=message.chat.id, text='Ваши события', reply_markup=markup)
@@ -275,7 +275,10 @@ class Sheduler():
         
         @self.bot.callback_query_handler(func=lambda call: True)
         def query_handler(call):
-            self.bot.answer_callback_query(callback_query_id=call.id, text=call.data)        
+            if call.data['type'] == 'event' :
+                print(call.data['event'])
+            
+            #self.bot.answer_callback_query(callback_query_id=call.id, text=call.data)        
         
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
@@ -290,6 +293,20 @@ class Sheduler():
     def __del__(self):
         self.threadTimer.do_run = False
         self.threadTimer.join()
+    
+    def days(self):
+        markup = types.InlineKeyboardMarkup()
+        button_Monday = types.InlineKeyboardButton(text='Понедельник', callback_data='Понедельник')
+        button_Tuesday = types.InlineKeyboardButton(text='Вторник', callback_data='Вторник')
+        button_Wednesday = types.InlineKeyboardButton(text='Среда', callback_data='Среда')
+        button_Thursday = types.InlineKeyboardButton(text='Четверг', callback_data='Четверг')
+        button_Friday = types.InlineKeyboardButton(text='Пятница', callback_data='Пятница')
+        button_Saturday = types.InlineKeyboardButton(text='Суббота', callback_data='Суббота')
+        button_Sunday = types.InlineKeyboardButton(text='Воскресенье', callback_data='Воскресенье')
+        markup.add(button_Monday, button_Tuesday, button_Wednesday)
+        markup.add(button_Thursday, button_Friday)
+        markup.add(button_Saturday, button_Sunday)
+        self.bot.send_message(chat_id=message.chat.id, text='Выберите дни недели напоминания', reply_markup=markup)
     
     def process_step(self, message):
         chat_id = message.chat.id
