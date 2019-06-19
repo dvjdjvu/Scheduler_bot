@@ -235,7 +235,7 @@ class Sheduler():
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
                 self.bot.send_message(message.chat.id, 'Вы не зарегистрированы.')
                 return
-            
+            '''
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
             
             for men in self.mongo.coll.find({"id": message.chat.id}):
@@ -245,7 +245,15 @@ class Sheduler():
             
             msg = self.bot.reply_to(message, 'Events:', reply_markup=markup)
             self.bot.register_next_step_handler(msg, self.process_step)
-        
+            '''
+            markup = types.InlineKeyboardMarkup()
+            
+            for men in self.mongo.coll.find({"id": message.chat.id}):
+                events = men.get('events', [])
+                for event in events:
+                    button = types.InlineKeyboardButton(text=event['name'], callback_data=event['name'])
+                    markup.add(button)
+            
         @self.bot.message_handler(commands=['ss'])
         def start(message):
             markup = types.InlineKeyboardMarkup()
