@@ -237,7 +237,14 @@ class Sheduler():
             
             #for men in self.mongo.coll.find({"id": message.chat.id}):
             #    print(men)
-                
+        
+        @self.bot.message_handler(commands=['days'])
+        def get_days(message):
+            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+            markup.add('1', '2') #Имена кнопок
+            msg = bot.reply_to(message, 'Test text', reply_markup=markup)
+            bot.register_next_step_handler(msg, process_step)
+          
     def __del__(self):
         self.threadTimer.do_run = False
         self.threadTimer.join()
