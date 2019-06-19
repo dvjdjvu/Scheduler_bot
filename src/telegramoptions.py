@@ -4,7 +4,7 @@
 # grcanosa https://github.com/grcanosa
 #
 
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup,ReplyKeyboardRemove
+from telegram import *
 
 
 
