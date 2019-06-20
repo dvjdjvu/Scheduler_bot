@@ -243,6 +243,7 @@ class Sheduler():
                 for event in events:
                     button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'type': 'event','event': event}))
                     markup.add(button)
+                    print(json.dumps({'type': 'event','event': event}))
                     
             self.bot.send_message(chat_id=message.chat.id, text='Ваши события', reply_markup=markup)
             self.bot.register_next_step_handler(message, self.process_step)
