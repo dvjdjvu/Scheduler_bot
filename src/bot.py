@@ -44,6 +44,9 @@ def first_submenu(bot, update):
 def second_submenu(bot, update):
     pass
 
+def third_submenu(bot, update):
+    pass
+
 ############################ Keyboards #########################################
 def main_menu_keyboard():
     keyboard = [[InlineKeyboardButton('Option 1', callback_data='m1')],
