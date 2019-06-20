@@ -235,30 +235,20 @@ class Sheduler():
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
                 self.bot.send_message(message.chat.id, 'Вы не зарегистрированы.')
                 return
-            '''
-            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-            
-            for men in self.mongo.coll.find({"id": message.chat.id}):
-                events = men.get('events', [])
-                for event in events:
-                    markup.add(event['name']) #Имена кнопок
-            
-            msg = self.bot.reply_to(message, 'Events:', reply_markup=markup)
-            self.bot.register_next_step_handler(msg, self.process_step)
-            '''
+
             markup = types.InlineKeyboardMarkup()
             
             for men in self.mongo.coll.find({"id": message.chat.id}):
                 events = men.get('events', [])
                 for event in events:
-                    button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'type': 'event','event': event['name']}))
+                    button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'type': 'event','event': event}))
                     markup.add(button)
                     
             self.bot.send_message(chat_id=message.chat.id, text='Ваши события', reply_markup=markup)
             self.bot.register_next_step_handler(message, self.process_step)
             
             
-        @self.bot.message_handler(commands=['ss'])
+        @self.bot.message_handler(commands=['select'])
         def start(message):
             markup = types.InlineKeyboardMarkup()
             button_Monday = types.InlineKeyboardButton(text='Понедельник', callback_data='Понедельник')
@@ -271,16 +261,14 @@ class Sheduler():
             markup.add(button_Monday, button_Tuesday, button_Wednesday)
             markup.add(button_Thursday, button_Friday)
             markup.add(button_Saturday, button_Sunday)
-            self.bot.send_message(chat_id=message.chat.id, text='Выберите дни недели напоминания', reply_markup=markup)
+            self.bot.send_message(chat_id=message.chat.id, text='Выберите дни напоминаний', reply_markup=markup)
         
         @self.bot.callback_query_handler(func=lambda call: True)
         def query_handler(call):
             call.data = json.loads(call.data)
             
             if call.data['type'] == 'event' :
-                print(call.data['event'])
-            
-            #self.bot.answer_callback_query(callback_query_id=call.id, text=call.data)        
+                self.bot.answer_callback_query(callback_query_id=call.id, text=str(call.data['event']))
         
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
