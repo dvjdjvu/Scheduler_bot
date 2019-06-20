@@ -23,29 +23,19 @@ from telegram.ext import CommandHandler, CallbackQueryHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 ############################### Bot ############################################
 def start(bot, update):
-    update.message.reply_text(main_menu_message(),
-                            reply_markup=main_menu_keyboard())
+    update.message.reply_text(main_menu_message(), reply_markup=main_menu_keyboard())
 
 def main_menu(bot, update):
     query = update.callback_query
-    bot.edit_message_text(chat_id=query.message.chat_id,
-                        message_id=query.message.message_id,
-                        text=main_menu_message(),
-                        reply_markup=main_menu_keyboard())
+    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=main_menu_message(), reply_markup=main_menu_keyboard())
 
 def first_menu(bot, update):
     query = update.callback_query
-    bot.edit_message_text(chat_id=query.message.chat_id,
-                        message_id=query.message.message_id,
-                        text=first_menu_message(),
-                        reply_markup=first_menu_keyboard())
+    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=first_menu_message(), reply_markup=first_menu_keyboard())
 
 def second_menu(bot, update):
     query = update.callback_query
-    bot.edit_message_text(chat_id=query.message.chat_id,
-                        message_id=query.message.message_id,
-                        text=second_menu_message(),
-                        reply_markup=second_menu_keyboard())
+    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=second_menu_message(), reply_markup=second_menu_keyboard())
 
 # and so on for every callback_data option
 def first_submenu(bot, update):
@@ -73,6 +63,12 @@ def second_menu_keyboard():
               [InlineKeyboardButton('Main menu', callback_data='main')]]
     return InlineKeyboardMarkup(keyboard)
 
+def third_menu_keyboard():
+    keyboard = [[InlineKeyboardButton('Submenu 3-1', callback_data='m3_1')],
+              [InlineKeyboardButton('Submenu 3-2', callback_data='m3_2')],
+              [InlineKeyboardButton('Main menu', callback_data='main')]]
+    return InlineKeyboardMarkup(keyboard)
+
 ############################# Messages #########################################
 def main_menu_message():
     return 'Choose the option in main menu:'
@@ -83,6 +79,9 @@ def first_menu_message():
 def second_menu_message():
     return 'Choose the submenu in second menu:'
 
+def third_menu_message():
+    return 'Choose the submenu in third menu:'
+
 ############################# Handlers #########################################
 updater = Updater(ShedulerToken.token)
 
@@ -90,10 +89,10 @@ updater.dispatcher.add_handler(CommandHandler('sss', start))
 updater.dispatcher.add_handler(CallbackQueryHandler(main_menu, pattern='main'))
 updater.dispatcher.add_handler(CallbackQueryHandler(first_menu, pattern='m1'))
 updater.dispatcher.add_handler(CallbackQueryHandler(second_menu, pattern='m2'))
-updater.dispatcher.add_handler(CallbackQueryHandler(first_submenu,
-                                                    pattern='m1_1'))
-updater.dispatcher.add_handler(CallbackQueryHandler(second_submenu,
-                                                    pattern='m2_1'))
+updater.dispatcher.add_handler(CallbackQueryHandler(third_menu, pattern='m3'))
+updater.dispatcher.add_handler(CallbackQueryHandler(first_submenu, pattern='m1_1'))
+updater.dispatcher.add_handler(CallbackQueryHandler(second_submenu, pattern='m2_1'))
+updater.dispatcher.add_handler(CallbackQueryHandler(third_submenu, pattern='m3_1'))
 
 updater.start_polling()
 
