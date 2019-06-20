@@ -306,7 +306,14 @@ class Sheduler():
             pass
         else:
             pass
-    
+        
+        #call.data = json.loads(call.data)
+        '''
+        if call.data['type'] == 'event' :
+            #self.bot.answer_callback_query(callback_query_id=call.id, text=str(call.data['name']))
+            self.bot.send_message(chat_id=call.id, text='Выбрано напоминание: {}'.format(call.data['name']))
+        '''
+        
     def run(self):
         self.threadTimer.start()
         
