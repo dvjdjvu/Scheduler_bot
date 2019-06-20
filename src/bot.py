@@ -270,6 +270,7 @@ class Sheduler():
             if call.data['type'] == 'event' :
                 #self.bot.answer_callback_query(callback_query_id=call.id, text=str(call.data['name']))
                 print(call.data)
+                print(call.id)
                 self.bot.send_message(chat_id=call.id, text='Выбрано напоминание: {}'.format(call.data['name']))
         
         @self.bot.message_handler(content_types=['text'])
