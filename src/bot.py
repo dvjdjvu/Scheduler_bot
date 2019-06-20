@@ -36,6 +36,10 @@ def first_menu(bot, update):
 def second_menu(bot, update):
     query = update.callback_query
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=second_menu_message(), reply_markup=second_menu_keyboard())
+    
+def third_menu(bot, update):
+    query = update.callback_query
+    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=third_menu_message(), reply_markup=third_menu_keyboard())
 
 # and so on for every callback_data option
 def first_submenu(bot, update):
