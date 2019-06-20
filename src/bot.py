@@ -245,7 +245,7 @@ class Sheduler():
                     markup.add(button)
                     
             self.bot.send_message(chat_id=message.chat.id, text='Ваши события', reply_markup=markup)
-            self.bot.register_next_step_handler(message, self.process_step)
+            #self.bot.register_next_step_handler(message, self.process_step)
             
             
         @self.bot.message_handler(commands=['select'])
