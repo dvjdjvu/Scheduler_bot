@@ -241,9 +241,8 @@ class Sheduler():
             for men in self.mongo.coll.find({"id": message.chat.id}):
                 events = men.get('events', [])
                 for event in events:
-                    button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'type': 'event','event': json.dumps(event)}))
+                    button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'type': 'event','name': event['name'], 'time': event['time']}))
                     markup.add(button)
-                    print(json.dumps({'type': 'event','event': event}))
                     
             self.bot.send_message(chat_id=message.chat.id, text='Ваши события', reply_markup=markup)
             self.bot.register_next_step_handler(message, self.process_step)
@@ -269,7 +268,7 @@ class Sheduler():
             call.data = json.loads(call.data)
             
             if call.data['type'] == 'event' :
-                self.bot.answer_callback_query(callback_query_id=call.id, text=str(call.data['event']))
+                self.bot.answer_callback_query(callback_query_id=call.id, text=str(call.data['name']))
         
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
