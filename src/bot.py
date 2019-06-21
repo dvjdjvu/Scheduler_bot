@@ -30,7 +30,7 @@ del_menu_message = 'Удалить напоминание:'
 ############################# Menu #########################################
 def start(bot, update):
     print('start')
-    update.message.reply_text(main_menu_message(), reply_markup=main_menu_keyboard())
+    update.message.reply_text(main_menu_message, reply_markup=main_menu_keyboard())
 
 def main_menu(bot, update):
     query = update.callback_query
