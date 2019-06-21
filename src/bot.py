@@ -25,11 +25,10 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 main_menu_message = 'Меню:'
 events_menu_message = 'Напоминания:'
 add_menu_message = 'Добавить напоминание:'
-del_menu_message = 'Удалить напоминание:'
+del_menu_message = 'Выберите напоминание которое хотите удалить:'
 
 ############################# Menu #########################################
 def start(bot, update):
-    print('start')
     update.message.reply_text(main_menu_message, reply_markup=main_menu_keyboard())
 
 def main_menu(bot, update):
@@ -43,6 +42,7 @@ def first_menu(bot, update):
 def second_menu(bot, update):
     query = update.callback_query
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=add_menu_message, reply_markup=add_menu_keyboard())
+    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text="Введите имя напоминания")
 
 def third_menu(bot, update):
     query = update.callback_query
@@ -59,8 +59,8 @@ def third_submenu(bot, update):
 
 ############################ Keyboards #########################################
 def main_menu_keyboard():
-    keyboard = [[InlineKeyboardButton('Напоминания', callback_data='events')],
-                [InlineKeyboardButton('Добавить', callback_data='add')],
+    keyboard = [[InlineKeyboardButton('Ваши напоминания', callback_data='events')],
+                [InlineKeyboardButton('Добавить новое', callback_data='add')],
                 [InlineKeyboardButton('Удалить', callback_data='del')]]
     return InlineKeyboardMarkup(keyboard)
 
@@ -81,7 +81,7 @@ def del_menu_keyboard():
 
 updater = Updater(ShedulerToken.token)
 
-updater.dispatcher.add_handler(CommandHandler('start', start))
+updater.dispatcher.add_handler(CommandHandler(['start', 'menu'], start))
 updater.dispatcher.add_handler(CallbackQueryHandler(main_menu, pattern='main'))
 updater.dispatcher.add_handler(CallbackQueryHandler(first_menu, pattern='events'))
 updater.dispatcher.add_handler(CallbackQueryHandler(second_menu, pattern='add'))
@@ -91,83 +91,6 @@ updater.dispatcher.add_handler(CallbackQueryHandler(second_submenu, pattern='m2_
 updater.dispatcher.add_handler(CallbackQueryHandler(third_submenu, pattern='m3_1'))
 
 updater.start_polling()
-
-class Sheduler():
-    
-    main_menu_message = 'Меню:'
-    events_menu_message = 'Напоминания:'
-    add_menu_message = 'Добавить напоминание:'
-    del_menu_message = 'Удалить напоминание:'
-    
-    ############################# Handlers #########################################
-    def __init__(self):
-        self.mongo = mongo.mongo()
-        
-        self.updater = Updater(ShedulerToken.token)
-
-        self.updater.dispatcher.add_handler(CommandHandler('start', self.start))
-        self.updater.dispatcher.add_handler(CallbackQueryHandler(self.main_menu, pattern='main'))
-        self.updater.dispatcher.add_handler(CallbackQueryHandler(self.first_menu, pattern='events'))
-        self.updater.dispatcher.add_handler(CallbackQueryHandler(self.second_menu, pattern='add'))
-        self.updater.dispatcher.add_handler(CallbackQueryHandler(self.third_menu, pattern='del'))
-        self.updater.dispatcher.add_handler(CallbackQueryHandler(self.first_submenu, pattern='m1_1'))
-        self.updater.dispatcher.add_handler(CallbackQueryHandler(self.second_submenu, pattern='m2_1'))
-        self.updater.dispatcher.add_handler(CallbackQueryHandler(self.third_submenu, pattern='m3_1'))
-    
-    ############################# Menu #########################################
-    def start(bot, update):
-        print('start')
-        update.message.reply_text(self.main_menu_message(), reply_markup=self.main_menu_keyboard())
-
-    def main_menu(bot, update):
-        query = update.callback_query
-        bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=self.main_menu_message, reply_markup=self.main_menu_keyboard())
-
-    def first_menu(bot, update):
-        query = update.callback_query
-        bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=self.events_menu_message, reply_markup=self.events_menu_keyboard())
-
-    def second_menu(bot, update):
-        query = update.callback_query
-        bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=self.add_menu_message, reply_markup=self.add_menu_keyboard())
-    
-    def third_menu(bot, update):
-        query = update.callback_query
-        bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=self.del_menu_message, reply_markup=self.del_menu_keyboard())
-
-    def first_submenu(bot, update):
-        pass
-
-    def second_submenu(bot, update):
-        pass
-
-    def third_submenu(bot, update):
-        pass
-
-    ############################ Keyboards #########################################
-    def main_menu_keyboard():
-        keyboard = [[InlineKeyboardButton('Напоминания', callback_data='events')],
-                    [InlineKeyboardButton('Добавить', callback_data='add')],
-                    [InlineKeyboardButton('Удалить', callback_data='del')]]
-        return InlineKeyboardMarkup(keyboard)
-
-    def events_menu_keyboard():
-        keyboard = [[InlineKeyboardButton('Добавить', callback_data='m2_1')],
-                    [InlineKeyboardButton('Меню', callback_data='main')]]
-        return InlineKeyboardMarkup(keyboard)
-
-    def add_menu_keyboard():
-        keyboard = [[InlineKeyboardButton('Меню', callback_data='main')]]
-        return InlineKeyboardMarkup(keyboard)
-
-    def del_menu_keyboard():
-        keyboard = [[InlineKeyboardButton('Submenu 3-1', callback_data='m3_1')],
-                    [InlineKeyboardButton('Submenu 3-2', callback_data='m3_2')],
-                    [InlineKeyboardButton('Меню', callback_data='main')]]
-        return InlineKeyboardMarkup(keyboard)
-
-    def run(self):
-        self.updater.start_polling()
 
 '''
 class Sheduler():
