@@ -25,7 +25,7 @@ menu_level = 'main_menu'
 
 main_menu_message = 'Меню:'
 events_menu_message = 'Напоминания:'
-add_menu_message = 'Добавить напоминание:'
+add_menu_message = 'Введите имя нового напоминания:'
 del_menu_message = 'Выберите напоминание которое хотите удалить:'
 
 Mongo = mongo.mongo()
@@ -47,14 +47,6 @@ def main_menu(bot, update):
 def location_menu(bot, update):
     print('location_menu')
     menu_level = 'location_menu'
-    query = update.callback_query
-    
-    keyboard = [[InlineKeyboardButton('Ваши напоминания', callback_data='events', request_location=True)]]
-    
-
-    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text='main_menu_message', reply_markup=keyboard)
-    
-    #update.message.reply_text(message_id=query.message.message_id, reply_markup=keyboard)
 
 def events_menu(bot, update):
     menu_level = 'events_menu'
@@ -76,7 +68,7 @@ def add_menu(bot, update):
     menu_level = 'add_menu'
     query = update.callback_query
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=add_menu_message, reply_markup=add_menu_keyboard())
-    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text="Введите название нового напоминания")
+    menu_level = 'add_menu_get_name'
 
 def del_menu(bot, update):
     menu_level = 'del_menu'
