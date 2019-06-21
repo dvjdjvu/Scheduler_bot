@@ -27,11 +27,11 @@ class Sheduler():
     add_menu_message = 'Добавить напоминание:'
     del_menu_message = 'Удалить напоминание:'
     
-    updater = Updater(ShedulerToken.token)
+    #updater = Updater(ShedulerToken.token)
     
     ############################# Handlers #########################################
     def __init__(self, _mongo):
-        #self.updater = Updater(ShedulerToken.token)
+        self.updater = Updater(ShedulerToken.token)
 
         self.updater.dispatcher.add_handler(CommandHandler('start', self.start))
         self.updater.dispatcher.add_handler(CallbackQueryHandler(self.main_menu, pattern='main'))
@@ -44,6 +44,7 @@ class Sheduler():
     
     ############################# Menu #########################################
     def start(bot, update):
+        print('start')
         update.message.reply_text(self.main_menu_message(), reply_markup=self.main_menu_keyboard())
 
     def main_menu(bot, update):
