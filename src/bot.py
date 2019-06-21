@@ -28,8 +28,6 @@ class Sheduler():
     add_menu_message = 'Добавить напоминание:'
     del_menu_message = 'Удалить напоминание:'
     
-    #updater = Updater(ShedulerToken.token)
-    
     ############################# Handlers #########################################
     def __init__(self):
         self.mongo = mongo.mongo()
@@ -79,16 +77,14 @@ class Sheduler():
 
     ############################ Keyboards #########################################
     def main_menu_keyboard():
-        #keyboard = [[InlineKeyboardButton('Напоминания', callback_data='events')],
-        #            [InlineKeyboardButton('Добавить', callback_data='add')],
-        #            [InlineKeyboardButton('Удалить', callback_data='del')]]
-        keyboard = [[InlineKeyboardButton('qqq', callback_data='events')],
-                    [InlineKeyboardButton('www', callback_data='add')],
-                    [InlineKeyboardButton('eee', callback_data='del')]]
+        keyboard = [[InlineKeyboardButton('Напоминания', callback_data='events')],
+                    [InlineKeyboardButton('Добавить', callback_data='add')],
+                    [InlineKeyboardButton('Удалить', callback_data='del')]]
         return InlineKeyboardMarkup(keyboard)
 
     def events_menu_keyboard():
-        keyboard = [[InlineKeyboardButton('Меню', callback_data='main')]]
+        keyboard = [[InlineKeyboardButton('Добавить', callback_data='m2_1')],
+                    [InlineKeyboardButton('Меню', callback_data='main')]]
         return InlineKeyboardMarkup(keyboard)
 
     def add_menu_keyboard():
