@@ -21,6 +21,7 @@ from telegram.ext import Updater, Filters
 from telegram.ext import CommandHandler, CallbackQueryHandler, MessageHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
+menu_level = ''
 
 main_menu_message = 'Меню:'
 events_menu_message = 'Напоминания:'
@@ -29,25 +30,31 @@ del_menu_message = 'Выберите напоминание которое хо�
 
 ############################# Menu #########################################
 def menu_handler(bot, update):
+    menu_level = 'main'
+    
     update.message.reply_text(main_menu_message, reply_markup=main_menu_keyboard())
 
 def text_handler(bot, update):
     print(update.message.text)
 
 def main_menu(bot, update):
+    print('main_menu')
     query = update.callback_query
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=main_menu_message, reply_markup=main_menu_keyboard())
 
-def first_menu(bot, update):
+def events_menu(bot, update):
+    print('events_menu')
     query = update.callback_query
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=events_menu_message, reply_markup=events_menu_keyboard())
 
-def second_menu(bot, update):
+def add_menu(bot, update):
+    print('add_menu')
     query = update.callback_query
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=add_menu_message, reply_markup=add_menu_keyboard())
-    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text="Введите имя напоминания")
+    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text="Введите название нового напоминания")
 
-def third_menu(bot, update):
+def del_menu(bot, update):
+    print('del_menu')
     query = update.callback_query
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=del_menu_message, reply_markup=del_menu_keyboard())
 
@@ -87,9 +94,9 @@ updater = Updater(ShedulerToken.token)
 updater.dispatcher.add_handler(CommandHandler(['start', 'menu'], menu_handler))
 updater.dispatcher.add_handler(MessageHandler(Filters.text, text_handler))
 updater.dispatcher.add_handler(CallbackQueryHandler(main_menu, pattern='main'))
-updater.dispatcher.add_handler(CallbackQueryHandler(first_menu, pattern='events'))
-updater.dispatcher.add_handler(CallbackQueryHandler(second_menu, pattern='add'))
-updater.dispatcher.add_handler(CallbackQueryHandler(third_menu, pattern='del'))
+updater.dispatcher.add_handler(CallbackQueryHandler(events_menu, pattern='events'))
+updater.dispatcher.add_handler(CallbackQueryHandler(add_menu, pattern='add'))
+updater.dispatcher.add_handler(CallbackQueryHandler(del_menu, pattern='del'))
 updater.dispatcher.add_handler(CallbackQueryHandler(first_submenu, pattern='m1_1'))
 updater.dispatcher.add_handler(CallbackQueryHandler(second_submenu, pattern='m2_1'))
 updater.dispatcher.add_handler(CallbackQueryHandler(third_submenu, pattern='m3_1'))
