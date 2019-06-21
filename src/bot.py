@@ -38,12 +38,14 @@ class Sheduler():
 
         self.updater.dispatcher.add_handler(CommandHandler('start', self.start))
         self.updater.dispatcher.add_handler(CallbackQueryHandler(self.main_menu, pattern='main'))
+        '''
         self.updater.dispatcher.add_handler(CallbackQueryHandler(self.first_menu, pattern='events'))
         self.updater.dispatcher.add_handler(CallbackQueryHandler(self.second_menu, pattern='add'))
         self.updater.dispatcher.add_handler(CallbackQueryHandler(self.third_menu, pattern='del'))
         self.updater.dispatcher.add_handler(CallbackQueryHandler(self.first_submenu, pattern='m1_1'))
         self.updater.dispatcher.add_handler(CallbackQueryHandler(self.second_submenu, pattern='m2_1'))
-        self.updater.dispatcher.add_handler(CallbackQueryHandler(self.third_submenu, pattern='m3_1'))    
+        self.updater.dispatcher.add_handler(CallbackQueryHandler(self.third_submenu, pattern='m3_1'))
+        '''
     
     ############################# Menu #########################################
     def start(bot, update):
