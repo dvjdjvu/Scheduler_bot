@@ -44,6 +44,17 @@ def main_menu(bot, update):
     query = update.callback_query
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=main_menu_message, reply_markup=main_menu_keyboard())
 
+def location_menu(bot, update):
+    menu_level = 'location_menu'
+    query = update.callback_query
+    
+    keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+    button_geo = types.KeyboardButton(text="Отправить местоположение", request_location=True)
+    keyboard.add(button_geo)
+    bot.send_message(message.chat.id, "Привет, нажми на кнопку и передай мне свое место положение для уточнения твоего времени", reply_markup=keyboard)
+    
+    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=main_menu_message, reply_markup=main_menu_keyboard())
+
 def events_menu(bot, update):
     menu_level = 'events_menu'
     
@@ -69,6 +80,13 @@ def add_menu(bot, update):
 def del_menu(bot, update):
     menu_level = 'del_menu'
     query = update.callback_query
+    
+    for men in Mongo.coll.find({"id": query.message.chat_id}):
+        events = men.get('events', [])
+        _str = events_menu_message + "\n"
+        for event in events:
+            _str += "'{}' Время: '{}' Сообщение: '{}'\n".format(event['name'], event['time'], event['text'])
+    
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=del_menu_message, reply_markup=del_menu_keyboard())
 
 def first_submenu(bot, update):
@@ -84,7 +102,8 @@ def third_submenu(bot, update):
 def main_menu_keyboard():
     keyboard = [[InlineKeyboardButton('Ваши напоминания', callback_data='events')],
                 [InlineKeyboardButton('Добавить новое', callback_data='add')],
-                [InlineKeyboardButton('Удалить', callback_data='del')]]
+                [InlineKeyboardButton('Удалить', callback_data='del')],
+                [InlineKeyboardButton('Передать время', callback_data='location')]]
     return InlineKeyboardMarkup(keyboard)
 
 def events_menu_keyboard():
@@ -112,6 +131,7 @@ updater.dispatcher.add_handler(CallbackQueryHandler(del_menu, pattern='del'))
 updater.dispatcher.add_handler(CallbackQueryHandler(first_submenu, pattern='m1_1'))
 updater.dispatcher.add_handler(CallbackQueryHandler(second_submenu, pattern='m2_1'))
 updater.dispatcher.add_handler(CallbackQueryHandler(third_submenu, pattern='m3_1'))
+updater.dispatcher.add_handler(CallbackQueryHandler(location_menu, pattern='location'))
 
 updater.start_polling()
 
@@ -298,7 +318,7 @@ class Sheduler():
             self.bot.send_message(message.chat.id, 'Всего доброго.')
             
             for men in self.mongo.coll.find({"id": message.chat.id}):
-                print(men)            
+                print(men)         
         
         # Локация пользователя
         @self.bot.message_handler(commands=['geo'])
