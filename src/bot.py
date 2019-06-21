@@ -21,40 +21,56 @@ from telegram.ext import Updater, Filters
 from telegram.ext import CommandHandler, CallbackQueryHandler, MessageHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
-menu_level = ''
+menu_level = 'main_menu'
 
 main_menu_message = 'Меню:'
 events_menu_message = 'Напоминания:'
 add_menu_message = 'Добавить напоминание:'
 del_menu_message = 'Выберите напоминание которое хотите удалить:'
 
+Mongo = mongo.mongo()
+
 ############################# Menu #########################################
 def menu_handler(bot, update):
-    menu_level = 'main'
+    menu_level = 'main_menu'
     
     update.message.reply_text(main_menu_message, reply_markup=main_menu_keyboard())
 
 def text_handler(bot, update):
-    print(update.message.text)
+    print(menu_level, update.message.text)
 
 def main_menu(bot, update):
-    print('main_menu')
+    menu_level = 'main_menu'
     query = update.callback_query
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=main_menu_message, reply_markup=main_menu_keyboard())
 
 def events_menu(bot, update):
-    print('events_menu')
+    menu_level = 'events_menu'
+    
     query = update.callback_query
+    
+    if not Mongo.coll.find({"id": query.message.chat_id}).count() :
+        return
+    
+    for men in Mongo.coll.find({"id": query.message.chat_id}):
+        events = men.get('events', [])
+        _str = "Список событий:\n"
+        for event in events:
+            _str += "'{}' Время: '{}' Сообщение: '{}'\n".format(event['name'], event['time'], event['text'])
+            print(event)
+        #self.bot.send_message(query.message.chat_id, _str[:-1])
+    
+    #bot.message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=events_menu_message, reply_markup=events_menu_keyboard())
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=events_menu_message, reply_markup=events_menu_keyboard())
 
 def add_menu(bot, update):
-    print('add_menu')
+    menu_level = 'add_menu'
     query = update.callback_query
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=add_menu_message, reply_markup=add_menu_keyboard())
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text="Введите название нового напоминания")
 
 def del_menu(bot, update):
-    print('del_menu')
+    menu_level = 'del_menu'
     query = update.callback_query
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=del_menu_message, reply_markup=del_menu_keyboard())
 
@@ -75,8 +91,7 @@ def main_menu_keyboard():
     return InlineKeyboardMarkup(keyboard)
 
 def events_menu_keyboard():
-    keyboard = [[InlineKeyboardButton('Добавить', callback_data='m2_1')],
-                [InlineKeyboardButton('Меню', callback_data='main')]]
+    keyboard = [[InlineKeyboardButton('Меню', callback_data='main')]]
     return InlineKeyboardMarkup(keyboard)
 
 def add_menu_keyboard():
