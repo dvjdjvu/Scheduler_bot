@@ -18,7 +18,7 @@ import json
 import re
 
 from telegram.ext import Updater
-from telegram.ext import CommandHandler, CallbackQueryHandler
+from telegram.ext import CommandHandler, CallbackQueryHandler, MessageHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 
