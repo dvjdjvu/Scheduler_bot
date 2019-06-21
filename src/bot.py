@@ -54,14 +54,11 @@ def events_menu(bot, update):
     
     for men in Mongo.coll.find({"id": query.message.chat_id}):
         events = men.get('events', [])
-        _str = "Список событий:\n"
+        _str = events_menu_message + "\n"
         for event in events:
             _str += "'{}' Время: '{}' Сообщение: '{}'\n".format(event['name'], event['time'], event['text'])
-            print(event)
-        #self.bot.send_message(query.message.chat_id, _str[:-1])
     
-    #bot.message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=events_menu_message, reply_markup=events_menu_keyboard())
-    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=events_menu_message, reply_markup=events_menu_keyboard())
+    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=_str, reply_markup=events_menu_keyboard())
 
 def add_menu(bot, update):
     menu_level = 'add_menu'
