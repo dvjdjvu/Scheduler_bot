@@ -73,7 +73,8 @@ def add_menu(bot, update):
     global menu_level
     menu_level = 'add_menu'
     query = update.callback_query
-    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=add_menu_message, reply_markup=add_menu_keyboard())
+    #bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=add_menu_message, reply_markup=add_menu_keyboard())
+    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=add_menu_message)
     menu_level = 'add_menu_get_name'
 
 def del_menu(bot, update):
