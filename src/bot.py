@@ -82,7 +82,7 @@ def second_menu_message():
     return 'Choose the submenu in second menu:'
 
 ############################# Handlers #########################################
-updater = Updater('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+updater = Updater(ShedulerToken.token)
 
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(CallbackQueryHandler(main_menu, pattern='main'))
