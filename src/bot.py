@@ -32,10 +32,11 @@ class Sheduler():
     
     ############################# Handlers #########################################
     def __init__(self):
-        self.updater = Updater(ShedulerToken.token)
         self.mongo = mongo.mongo()
+        
+        self.updater = Updater(ShedulerToken.token)
 
-        self.updater.dispatcher.add_handler(CommandHandler('start', self.start))
+        self.updater.dispatcher.add_handler(CommandHandler('start', self.start()))
         self.updater.dispatcher.add_handler(CallbackQueryHandler(self.main_menu, pattern='main'))
         self.updater.dispatcher.add_handler(CallbackQueryHandler(self.first_menu, pattern='events'))
         self.updater.dispatcher.add_handler(CallbackQueryHandler(self.second_menu, pattern='add'))
