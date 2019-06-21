@@ -45,6 +45,7 @@ def main_menu(bot, update):
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=main_menu_message, reply_markup=main_menu_keyboard())
 
 def location_menu(bot, update):
+    print('location_menu')
     menu_level = 'location_menu'
     query = update.callback_query
     
