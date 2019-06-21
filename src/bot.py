@@ -79,9 +79,12 @@ class Sheduler():
 
     ############################ Keyboards #########################################
     def main_menu_keyboard():
-        keyboard = [[InlineKeyboardButton('Напоминания', callback_data='events')],
-                    [InlineKeyboardButton('Добавить', callback_data='add')],
-                    [InlineKeyboardButton('Удалить', callback_data='del')]]
+        #keyboard = [[InlineKeyboardButton('Напоминания', callback_data='events')],
+        #            [InlineKeyboardButton('Добавить', callback_data='add')],
+        #            [InlineKeyboardButton('Удалить', callback_data='del')]]
+        keyboard = [[InlineKeyboardButton('qqq', callback_data='events')],
+                    [InlineKeyboardButton('www', callback_data='add')],
+                    [InlineKeyboardButton('eee', callback_data='del')]]
         return InlineKeyboardMarkup(keyboard)
 
     def events_menu_keyboard():
