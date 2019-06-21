@@ -5,9 +5,9 @@ import bot
 import mongo
 
 if __name__ == "__main__":
-    _mongo = mongo.mongo()
+    #_mongo = mongo.mongo()
     
-    bot = bot.Sheduler(_mongo)
+    bot = bot.Sheduler()
     
     bot.run()
 

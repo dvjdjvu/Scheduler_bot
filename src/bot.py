@@ -4,6 +4,7 @@
 import sys
 sys.path.append('../token')
 
+import mongo
 import pytz
 from tzwhere import tzwhere
 import datetime
@@ -30,10 +31,11 @@ class Sheduler():
     #updater = Updater(ShedulerToken.token)
     
     ############################# Handlers #########################################
-    def __init__(self, _mongo):
+    def __init__(self):
         self.updater = Updater(ShedulerToken.token)
+        self.mongo = mongo.mongo()
 
-        self.updater.dispatcher.add_handler(CommandHandler('start', start))
+        self.updater.dispatcher.add_handler(CommandHandler('start', self.start))
         self.updater.dispatcher.add_handler(CallbackQueryHandler(self.main_menu, pattern='main'))
         self.updater.dispatcher.add_handler(CallbackQueryHandler(self.first_menu, pattern='events'))
         self.updater.dispatcher.add_handler(CallbackQueryHandler(self.second_menu, pattern='add'))
