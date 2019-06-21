@@ -79,18 +79,18 @@ def del_menu_keyboard():
                 [InlineKeyboardButton('Меню', callback_data='main')]]
     return InlineKeyboardMarkup(keyboard)
 
-self.updater = Updater(ShedulerToken.token)
+updater = Updater(ShedulerToken.token)
 
-self.updater.dispatcher.add_handler(CommandHandler('start', start))
-self.updater.dispatcher.add_handler(CallbackQueryHandler(main_menu, pattern='main'))
-self.updater.dispatcher.add_handler(CallbackQueryHandler(first_menu, pattern='events'))
-self.updater.dispatcher.add_handler(CallbackQueryHandler(second_menu, pattern='add'))
-self.updater.dispatcher.add_handler(CallbackQueryHandler(third_menu, pattern='del'))
-self.updater.dispatcher.add_handler(CallbackQueryHandler(first_submenu, pattern='m1_1'))
-self.updater.dispatcher.add_handler(CallbackQueryHandler(second_submenu, pattern='m2_1'))
-self.updater.dispatcher.add_handler(CallbackQueryHandler(third_submenu, pattern='m3_1'))
+updater.dispatcher.add_handler(CommandHandler('start', start))
+updater.dispatcher.add_handler(CallbackQueryHandler(main_menu, pattern='main'))
+updater.dispatcher.add_handler(CallbackQueryHandler(first_menu, pattern='events'))
+updater.dispatcher.add_handler(CallbackQueryHandler(second_menu, pattern='add'))
+updater.dispatcher.add_handler(CallbackQueryHandler(third_menu, pattern='del'))
+updater.dispatcher.add_handler(CallbackQueryHandler(first_submenu, pattern='m1_1'))
+updater.dispatcher.add_handler(CallbackQueryHandler(second_submenu, pattern='m2_1'))
+updater.dispatcher.add_handler(CallbackQueryHandler(third_submenu, pattern='m3_1'))
 
-self.updater.start_polling()
+updater.start_polling()
 
 class Sheduler():
     
