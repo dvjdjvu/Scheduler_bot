@@ -27,9 +27,11 @@ class Sheduler():
     add_menu_message = 'Добавить напоминание:'
     del_menu_message = 'Удалить напоминание:'
     
+    updater = Updater(ShedulerToken.token)
+    
     ############################# Handlers #########################################
     def __init__(self, _mongo):
-        self.updater = Updater(ShedulerToken.token)
+        #self.updater = Updater(ShedulerToken.token)
 
         self.updater.dispatcher.add_handler(CommandHandler('start', self.start))
         self.updater.dispatcher.add_handler(CallbackQueryHandler(self.main_menu, pattern='main'))
