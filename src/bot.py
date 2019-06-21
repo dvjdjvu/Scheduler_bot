@@ -85,7 +85,7 @@ def del_menu_keyboard():
 updater = Updater(ShedulerToken.token)
 
 updater.dispatcher.add_handler(CommandHandler(['start', 'menu'], menu_handler))
-updater.dispatcher.add_handler(MessageHandler(Filters.text, start))
+updater.dispatcher.add_handler(MessageHandler(Filters.text, text_handler))
 updater.dispatcher.add_handler(CallbackQueryHandler(main_menu, pattern='main'))
 updater.dispatcher.add_handler(CallbackQueryHandler(first_menu, pattern='events'))
 updater.dispatcher.add_handler(CallbackQueryHandler(second_menu, pattern='add'))
