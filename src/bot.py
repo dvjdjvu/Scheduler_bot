@@ -32,23 +32,28 @@ Mongo = mongo.mongo()
 
 ############################# Menu #########################################
 def menu_handler(bot, update):
+    global menu_level
     menu_level = 'main_menu'
     
     update.message.reply_text(main_menu_message, reply_markup=main_menu_keyboard())
 
 def text_handler(bot, update):
+    global menu_level
     print(menu_level, update.message.text)
 
 def main_menu(bot, update):
+    global menu_level
     menu_level = 'main_menu'
     query = update.callback_query
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=main_menu_message, reply_markup=main_menu_keyboard())
 
 def location_menu(bot, update):
+    global menu_level
     print('location_menu')
     menu_level = 'location_menu'
 
 def events_menu(bot, update):
+    global menu_level
     menu_level = 'events_menu'
     
     query = update.callback_query
@@ -65,12 +70,14 @@ def events_menu(bot, update):
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=_str, reply_markup=events_menu_keyboard())
 
 def add_menu(bot, update):
+    global menu_level
     menu_level = 'add_menu'
     query = update.callback_query
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=add_menu_message, reply_markup=add_menu_keyboard())
     menu_level = 'add_menu_get_name'
 
 def del_menu(bot, update):
+    global menu_level
     menu_level = 'del_menu'
     query = update.callback_query
     
