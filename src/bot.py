@@ -54,7 +54,7 @@ def location_menu(bot, update):
     keyboard.add(button_geo)
     #bot.send_message(message.chat.id, "Привет, нажми на кнопку и передай мне свое место положение для уточнения твоего времени", reply_markup=keyboard)
     
-    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text="Локация", reply_markup=keyboard)
+    update.message.reply_text(message_id=query.message.message_id, reply_markup=keyboard)
 
 def events_menu(bot, update):
     menu_level = 'events_menu'
