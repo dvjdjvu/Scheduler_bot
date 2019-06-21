@@ -76,20 +76,6 @@ class Sheduler():
                     [InlineKeyboardButton('Submenu 3-2', callback_data='m3_2')],
                     [InlineKeyboardButton('Меню', callback_data='main')]]
         return InlineKeyboardMarkup(keyboard)
-
-    ############################# Messages #########################################
-    def main_menu_message():
-        return 'Меню:'
-
-    def events_menu_message():
-        return 'Напоминания:'
-
-    def add_menu_message():
-        return 'Добавить напоминание:'
-
-    def del_menu_message():
-        return 'Удалить напоминание:'
-
     
     ############################# Handlers #########################################
     def __init__(self, _mongo):
@@ -104,8 +90,12 @@ class Sheduler():
         self.updater.dispatcher.add_handler(CallbackQueryHandler(self.second_submenu, pattern='m2_1'))
         self.updater.dispatcher.add_handler(CallbackQueryHandler(self.third_submenu, pattern='m3_1'))
 
+        print('__init__')
+
     def run(self):
+        print('run 0')
         self.updater.start_polling()
+        print('run 1')
 
 '''
 class Sheduler():
