@@ -92,7 +92,7 @@ class Sheduler():
 
     
     ############################# Handlers #########################################
-    def __init__(self):
+    def __init__(self, _mongo):
         self.updater = Updater(ShedulerToken.token)
 
         self.updater.dispatcher.add_handler(CommandHandler(['menu', 'start'], self.start))
