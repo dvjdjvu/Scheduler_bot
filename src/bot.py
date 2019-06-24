@@ -332,8 +332,11 @@ class Sheduler():
             #self.bot.register_next_step_handler(message, self.process_step)
             
             
-        @self.bot.message_handler(commands=['select'])
+        @self.bot.message_handler(commands=['menu'])
         def start(message):
+            self.menu()
+            return
+            
             markup = types.InlineKeyboardMarkup()
             button_Monday = types.InlineKeyboardButton(text='Понедельник', callback_data='Понедельник')
             button_Tuesday = types.InlineKeyboardButton(text='Вторник', callback_data='Вторник')
@@ -349,6 +352,8 @@ class Sheduler():
         
         @self.bot.callback_query_handler(func=lambda call: True)
         def query_handler(call):
+            print(call.data)
+            return
             call.data = json.loads(call.data)
             
             if call.data['t'] == 'e' :
@@ -374,6 +379,17 @@ class Sheduler():
         self.threadTimer.do_run = False
         self.threadTimer.join()
     
+    def menu(self):
+        markup = types.InlineKeyboardMarkup()
+        button_events = types.InlineKeyboardButton(text='Ваши напоминания', callback_data='events')
+        button_new = types.InlineKeyboardButton(text='Добавить новое', callback_data='new')
+        button_del = types.InlineKeyboardButton(text='Удалить', callback_data='del')
+
+        markup.add(button_events)
+        markup.add(button_new)
+        markup.add(button_del)
+        self.bot.send_message(chat_id=message.chat.id, text='Выберите дни напоминаний', reply_markup=markup)
+        
     def day_off(self, _id, name, day):                
         for men in self.mongo.coll.find({"id": _id}):
             events = men.get('events', [])
