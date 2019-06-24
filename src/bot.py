@@ -303,7 +303,7 @@ class Sheduler():
                     events = men.get('events', [])
                     for event in events:
                         if event['name'] == name :
-                            events.pop(event)
+                            events.remove(event)
                             self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
                             
                             self.bot.send_message(message.chat.id, 'Напоминания {} удалено'.format(name))
