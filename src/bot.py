@@ -427,7 +427,7 @@ class Sheduler():
                 event['time'] = time
                 event['text'] = text
                 event['status'] = True 
-                event['days'] = {1: True, 2: True, 3: True, 4: True, 5: True, 6: True, 7: True}
+                event['days'] = {'1': True, '2': True, '3': True, '4': True, '5': True, '6': True, '7': True}
                         
                 events.append(event)
                 
