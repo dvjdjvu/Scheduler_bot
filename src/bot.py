@@ -21,6 +21,7 @@ from telegram.ext import Updater, Filters
 from telegram.ext import CommandHandler, CallbackQueryHandler, MessageHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
+'''
 menu_level = 'main_menu'
 
 main_menu_message = 'Меню:'
@@ -40,6 +41,8 @@ def menu_handler(bot, update):
 def text_handler(bot, update):
     global menu_level
     print(menu_level, update.message.text)
+    if menu_lvel == 'add_menu' :
+        bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=add_menu_message)
 
 def main_menu(bot, update):
     global menu_level
@@ -75,7 +78,7 @@ def add_menu(bot, update):
     query = update.callback_query
     #bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=add_menu_message, reply_markup=add_menu_keyboard())
     bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=add_menu_message)
-    menu_level = 'add_menu_get_name'
+    #menu_level = 'add_menu_get_name'
 
 def del_menu(bot, update):
     global menu_level
@@ -158,7 +161,7 @@ class Sheduler():
             _str = ''
             _str += '/help - помощь\n'
             _str += '/start - начать работу\n'
-            _str += '/add name_event time text - добавить напоминание\n'
+            _str += '/add name_event time text - добавить напоминание. Формат времени 16:00\n'
             _str += '/on name_event - включить напоминание\n'
             _str += '/off name_event - отключить напоминание\n'
             _str += '/events - список напоминаний\n'
@@ -173,16 +176,16 @@ class Sheduler():
             
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
                 
-                self.bot.send_message(message.chat.id, 'Привет, ты подключился ко мне. Я бот будильник!')
+                self.bot.send_message(message.chat.id, 'Добро пожаловать! Я бот напоминалка.')
                 self.bot.send_message(message.chat.id, 'Для помощи используй /help')
                 
-                self.save(message)
-            else :
-                self.bot.send_message(message.chat.id, 'Ты уже подключен.')
+                self.new(message)
+            #else :
+            #    self.bot.send_message(message.chat.id, 'Ты уже подключен.')
                 
-                for men in self.mongo.coll.find({"id": message.chat.id}):
-                    if not men.get('timezone_offset', None) :
-                        self.geoGet(message)
+            #    for men in self.mongo.coll.find({"id": message.chat.id}):
+            #        if not men.get('timezone_offset', None) :
+            #            self.geoGet(message)
         
         # Добавить напоминание
         @self.bot.message_handler(commands=['add'])
@@ -190,7 +193,7 @@ class Sheduler():
             print('add', message.chat.id)
             
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
-                self.save(message)
+                self.new(message)
             
             args = message.text.split(' ')
             print(len(args))
@@ -204,37 +207,8 @@ class Sheduler():
                 name = args[1]
                 time = args[2]
                 
-                for men in self.mongo.coll.find({"id": message.chat.id}):
-                    if not men.get('timezone_offset', None) :
-                        self.bot.send_message(message.chat.id, 'Передайте свою локацию для уточнения вашей временной зоны')
-                    
-                    events = men.get('events', [])
-                    
-                    flag = False
-                    # Ищем событие по имени
-                    for event in events:
-                        print('event', event)
-                        if event['name'] == name :
-                            event['name'] = name
-                            event['time'] = time
-                            event['text'] = text
-                            event['status'] = True
-                            
-                            flag = True
-                    
-                    # Создаем новое событие
-                    if flag == False :
-                        event = {}
-                        event['name'] = name
-                        event['time'] = time
-                        event['text'] = text
-                        event['status'] = True 
-                        
-                        events.append(event)
-                    
-                    print(events)
-                        
-                    self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
+                # Добавляем новое напоминание.
+                self.add(message.chat.id, name, time, text)
                 
             print(self.mongo.coll.find({"id": message.chat.id}).count())
             for men in self.mongo.coll.find({"id": message.chat.id}):
@@ -327,28 +301,6 @@ class Sheduler():
             print('geo', message.chat.id)
             self.geoGet(message)
     
-        # Локация пользователя
-        @self.bot.message_handler(content_types=['location'])
-        def get_location(message):
-            print('location', message.chat.id)
-            ##
-            #  Берем временную зону пользователя.
-            ##
-            tz = tzwhere.tzwhere()
-            timezone_str = tz.tzNameAt(message.location.latitude, message.location.longitude)            
-            
-            timezone = pytz.timezone(timezone_str)
-            
-            #print(timezone, timezone.utcoffset(datetime.datetime.now()))
-            timezone_offset = str(timezone.utcoffset(datetime.datetime.now()))
-            
-            self.mongo.coll.update({"id": message.chat.id}, {"$set": {"latitude": message.location.latitude, "longitude": message.location.longitude, "timezone_offset": timezone_offset}})
-            
-            self.bot.send_message(message.from_user.id, "Ваше местоположение и временная зона: {} {}".format(timezone_str, timezone_offset))
-            
-            #for men in self.mongo.coll.find({"id": message.chat.id}):
-            #    print(men)
-        
         @self.bot.message_handler(commands=['days'])
         def get_days(message):
             print('days', message.chat.id)
@@ -440,16 +392,51 @@ class Sheduler():
         
         self.bot.polling(none_stop=True, interval=0)
     
-    def save(self, message):
-        self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name, "status": True})
-        
+    def new(self, message):
+        self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name, "status": True})    
         self.geoGet(message)
+    
+    def add(self, _id, name, time, text):
+        for men in self.mongo.coll.find({"id": _id}):
+            if not men.get('timezone_offset', None) :
+                self.bot.send_message(_id, 'Отправьте своё местоположение для уточнения вашей временной зоны')
+                    
+            events = men.get('events', [])
+
+            if self.find(events) == False :
+                # Создаем новое событие
+                event = {}
+                event['name'] = name
+                event['time'] = time
+                event['text'] = text
+                event['status'] = True 
+                event['days'] = {1: True, 2: True, 3: True, 4: True, 5: True, 6: True, 7: True}
+                        
+                events.append(event)
+                
+                print(events)
+            
+                self.mongo.coll.update({'id': _id}, {"$set": {'events': events}})                
+                self.bot.send_message(_id, 'Напоминание {} добавлено'.format(name))
+            else : 
+                self.bot.send_message(_id, 'Напоминание {} уже существует'.format(name))
+    
+    # Поиск события по имени
+    def find(self, events):
+        flag = False
+        # Ищем событие по имени
+        for event in events:
+            print('event', event)
+            if event['name'] == name :
+                return True
+                
+        return False
     
     def geoGet(self, message):
         keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
         button_geo = types.KeyboardButton(text="Отправить местоположение", request_location=True)
         keyboard.add(button_geo)
-        self.bot.send_message(message.chat.id, "Привет, нажми на кнопку и передай мне свое местоположение для уточнения твоего времени", reply_markup=keyboard)
+        self.bot.send_message(message.chat.id, "Отправьте своё местоположение для уточнения вашей временной зоны", reply_markup=keyboard)
     
     def send_message(self, message) :
         
@@ -477,4 +464,3 @@ class Sheduler():
                 
             time.sleep(45)
             
-'''
