@@ -381,9 +381,9 @@ class Sheduler():
                 if event['name'] == name :
                     event['days'][day] = False
                         
-                    self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
+                    self.mongo.coll.update({'id': _id}, {"$set": {'events': events}})
                     
-                    self.bot.send_message(message.chat.id, 'Отправка напоминания {} в день №{} выключена.'.format(name, day))
+                    self.bot.send_message(_id, 'Отправка напоминания {} в день №{} выключена.'.format(name, day))
                     return
     
     def day_on(self, _id, name, day):
@@ -393,9 +393,9 @@ class Sheduler():
                 if event['name'] == name :
                     event['days'][day] = False
                         
-                    self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
+                    self.mongo.coll.update({'id': _id}, {"$set": {'events': events}})
                     
-                    self.bot.send_message(message.chat.id, 'Отправка напоминания {} в день №{} включена.'.format(name, day))
+                    self.bot.send_message(_id, 'Отправка напоминания {} в день №{} включена.'.format(name, day))
                     return
     
     def days_off(self, _id, name):
@@ -406,7 +406,7 @@ class Sheduler():
                     event['status'] = False 
                     self.mongo.coll.update({'id': _id}, {"$set": {'events': events}})
                     
-                    self.bot.send_message(message.chat.id, 'Отправка напоминания {} выключена.'.format(name))
+                    self.bot.send_message(_id, 'Отправка напоминания {} выключена.'.format(name))
                     return
     
     def days_on(self, _id, name):
@@ -417,7 +417,7 @@ class Sheduler():
                     event['status'] = False 
                     self.mongo.coll.update({'id': _id}, {"$set": {'events': events}})
                     
-                    self.bot.send_message(message.chat.id, 'Отправка напоминания {} включена.'.format(name))
+                    self.bot.send_message(_id, 'Отправка напоминания {} включена.'.format(name))
                     return 
     
     def days(self):
