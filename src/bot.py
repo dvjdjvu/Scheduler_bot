@@ -230,12 +230,12 @@ class Sheduler():
             elif len(args) <= 2 :
                 name = args[1]
                     
-                self.days_on(self, message.chat.id, name)
+                self.days_on(message.chat.id, name)
             else :
                 name = args[1]
             
                 for i in range(len(args) - 2) :    
-                    self.day_on(self, message.chat.id, name, args[i + 2])
+                    self.day_on(message.chat.id, name, args[i + 2])
         
         # Выключаем напоминание по имени.
         @self.bot.message_handler(commands=['off'])
@@ -253,12 +253,12 @@ class Sheduler():
             elif len(args) <= 2 :
                 name = args[1]
                 
-                self.days_off(self, message.chat.id, name)
+                self.days_off(message.chat.id, name)
             else :
                 name = args[1]
                 
                 for i in range(len(args) - 2) :    
-                    self.day_off(self, message.chat.id, name, args[i + 2])
+                    self.day_off(message.chat.id, name, args[i + 2])
                 
         # Список напоминаний пользователя
         @self.bot.message_handler(commands=['events'])
