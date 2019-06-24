@@ -227,6 +227,21 @@ class Sheduler():
             print(len(args))
             if len(args) <= 1 :
                 self.bot.send_message(message.chat.id, 'Формат команды: /on имя_события')
+            elif len(args) <= 2 :
+                name = args[1]
+                    
+                for men in self.mongo.coll.find({"id": message.chat.id}):
+                    events = men.get('events', [])
+                    for event in events:
+                        if event['name'] == name :
+                            event['status'] = True 
+                            for i in range(len(args) - 2) :    
+                                event['days'][args[i + 2]] = True
+                                
+                            self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
+                            
+                            self.bot.send_message(message.chat.id, 'Отправка напоминания {} включена.'.format(name))
+                            break
             else :
                 name = args[1]
             
@@ -253,6 +268,21 @@ class Sheduler():
             print(len(args))
             if len(args) <= 1 :
                 self.bot.send_message(message.chat.id, 'Формат команды: /off имя_события')
+            elif len(args) <= 2 :
+                name = args[1]
+                    
+                for men in self.mongo.coll.find({"id": message.chat.id}):
+                    events = men.get('events', [])
+                    for event in events:
+                        if event['name'] == name :
+                            #event['status'] = True 
+                            for i in range(len(args) - 2) :    
+                                event['days'][args[i + 2]] = False
+                                
+                            self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
+                            
+                            self.bot.send_message(message.chat.id, 'Отправка напоминания {} выключена.'.format(name))
+                            break
             else :
                 name = args[1]
             
@@ -449,6 +479,14 @@ class Sheduler():
                 
         return False
     
+    # Включить/выключить день напоминания
+    def day_change(self, events, name, day, val = False):
+        for event in events:
+            if event['name'] == name :
+                event['days'][day] = val
+                    
+        return events
+    
     def geoGet(self, message):
         keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
         button_geo = types.KeyboardButton(text="Отправить местоположение", request_location=True)
@@ -476,7 +514,7 @@ class Sheduler():
                         
                         #print(_time, _time_user)
                         
-                        if _time == _time_user :
+                        if _time == _time_user and event['days'][str(now.weekday() + 1)] == True:
                             self.bot.send_message(men['id'], event['text'])
                 
             time.sleep(45)
