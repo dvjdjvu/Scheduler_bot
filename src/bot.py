@@ -275,22 +275,22 @@ class Sheduler():
                     events = men.get('events', [])
                     for event in events:
                         if event['name'] == name :
-                            #event['status'] = True 
-                            for i in range(len(args) - 2) :    
-                                event['days'][args[i + 2]] = False
-                                
+                            event['status'] = False 
                             self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
                             
                             self.bot.send_message(message.chat.id, 'Отправка напоминания {} выключена.'.format(name))
                             break
             else :
                 name = args[1]
-            
+                        
                 for men in self.mongo.coll.find({"id": message.chat.id}):
                     events = men.get('events', [])
                     for event in events:
                         if event['name'] == name :
-                            event['status'] = False 
+                            #event['status'] = True 
+                            for i in range(len(args) - 2) :    
+                                event['days'][args[i + 2]] = False
+                                
                             self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
                             
                             self.bot.send_message(message.chat.id, 'Отправка напоминания {} выключена.'.format(name))
