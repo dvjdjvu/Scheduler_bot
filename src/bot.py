@@ -279,22 +279,39 @@ class Sheduler():
                 events = men.get('events', [])
                 _str = "Список событий:\n"
                 for event in events:
-                    _str += "'{}' Время: '{}' Сообщение: '{}'\n".format(event['name'], event['time'], event['text'])
+                    _str += "{}: Время - '{}' Дни - '{}' Сообщение - '{}'\n".format(event['name'], event['time'], event.get('days', ''), event['text'])
                     print(event)
                 self.bot.send_message(message.chat.id, _str[:-1])
         
-        # Удаляем информацию из базы
+        # Удаляем напоминание
         @self.bot.message_handler(commands=['del'])
         def get_del(message):
             print('del', message.chat.id)
             
-            self.mongo.coll.remove({"id": message.chat.id})
+            if not self.mongo.coll.find({"id": message.chat.id}).count() :
+                self.bot.send_message(message.chat.id, 'Вы не зарегистрированы.')
+                return
+                
+            args = message.text.split(' ')
+            print(len(args))
+            if len(args) <= 1 :
+                self.bot.send_message(message.chat.id, 'Формат команды: /off имя_события')
+            else :
+                name = args[1]
             
-            self.bot.send_message(message.chat.id, 'Всего доброго.')
-            
-            for men in self.mongo.coll.find({"id": message.chat.id}):
-                print(men)         
-        
+                for men in self.mongo.coll.find({"id": message.chat.id}):
+                    events = men.get('events', [])
+                    for event in events:
+                        if event['name'] == name :
+                            events.pop(event)
+                            self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
+                            
+                            self.bot.send_message(message.chat.id, 'Напоминания {} удалено'.format(name))
+                            return
+                        
+                self.bot.send_message(message.chat.id, 'Напоминания {} нет'.format(name))
+                        
+                        
         # Локация пользователя
         @self.bot.message_handler(commands=['geo'])
         def get_geo(message):
