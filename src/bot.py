@@ -230,30 +230,12 @@ class Sheduler():
             elif len(args) <= 2 :
                 name = args[1]
                     
-                for men in self.mongo.coll.find({"id": message.chat.id}):
-                    events = men.get('events', [])
-                    for event in events:
-                        if event['name'] == name :
-                            event['status'] = True 
-                            for i in range(len(args) - 2) :    
-                                event['days'][args[i + 2]] = True
-                                
-                            self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
-                            
-                            self.bot.send_message(message.chat.id, 'Отправка напоминания {} включена.'.format(name))
-                            break
+                self.days_on(self, message.chat.id, name)
             else :
                 name = args[1]
             
-                for men in self.mongo.coll.find({"id": message.chat.id}):
-                    events = men.get('events', [])
-                    for event in events:
-                        if event['name'] == name :
-                            event['status'] = True 
-                            self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
-                            
-                            self.bot.send_message(message.chat.id, 'Отправка напоминания {} в день {} включена.'.format(name, i + 2))
-                            break
+                for i in range(len(args) - 2) :    
+                    self.day_on(self, message.chat.id, name, args[i + 2])
         
         # Выключаем напоминание по имени.
         @self.bot.message_handler(commands=['off'])
@@ -270,31 +252,13 @@ class Sheduler():
                 self.bot.send_message(message.chat.id, 'Формат команды: /off имя_события')
             elif len(args) <= 2 :
                 name = args[1]
-                    
-                for men in self.mongo.coll.find({"id": message.chat.id}):
-                    events = men.get('events', [])
-                    for event in events:
-                        if event['name'] == name :
-                            event['status'] = False 
-                            self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
-                            
-                            self.bot.send_message(message.chat.id, 'Отправка напоминания {} выключена.'.format(name))
-                            break
+                
+                self.days_off(self, message.chat.id, name)
             else :
                 name = args[1]
-                        
-                for men in self.mongo.coll.find({"id": message.chat.id}):
-                    events = men.get('events', [])
-                    for event in events:
-                        if event['name'] == name :
-                            #event['status'] = True 
-                            for i in range(len(args) - 2) :    
-                                event['days'][args[i + 2]] = False
-                                
-                            self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
-                            
-                            self.bot.send_message(message.chat.id, 'Отправка напоминания {} в день {} выключена.'.format(name, i + 2))
-                            break
+                
+                for i in range(len(args) - 2) :    
+                    self.day_off(self, message.chat.id, name, args[i + 2])
                 
         # Список напоминаний пользователя
         @self.bot.message_handler(commands=['events'])
@@ -409,6 +373,52 @@ class Sheduler():
     def __del__(self):
         self.threadTimer.do_run = False
         self.threadTimer.join()
+    
+    def day_off(self, _id, name, day):                
+        for men in self.mongo.coll.find({"id": _id}):
+            events = men.get('events', [])
+            for event in events:
+                if event['name'] == name :
+                    event['days'][day] = False
+                        
+                    self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
+                    
+                    self.bot.send_message(message.chat.id, 'Отправка напоминания {} в день №{} выключена.'.format(name, day))
+                    return
+    
+    def day_on(self, _id, name, day):
+        for men in self.mongo.coll.find({"id": _id}):
+            events = men.get('events', [])
+            for event in events:
+                if event['name'] == name :
+                    event['days'][day] = False
+                        
+                    self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
+                    
+                    self.bot.send_message(message.chat.id, 'Отправка напоминания {} в день №{} включена.'.format(name, day))
+                    return
+    
+    def days_off(self, _id, name):
+        for men in self.mongo.coll.find({"id": _id}):
+            events = men.get('events', [])
+            for event in events:
+                if event['name'] == name :
+                    event['status'] = False 
+                    self.mongo.coll.update({'id': _id}, {"$set": {'events': events}})
+                    
+                    self.bot.send_message(message.chat.id, 'Отправка напоминания {} выключена.'.format(name))
+                    return
+    
+    def days_on(self, _id, name):
+        for men in self.mongo.coll.find({"id": _id}):
+            events = men.get('events', [])
+            for event in events:
+                if event['name'] == name :
+                    event['status'] = False 
+                    self.mongo.coll.update({'id': _id}, {"$set": {'events': events}})
+                    
+                    self.bot.send_message(message.chat.id, 'Отправка напоминания {} включена.'.format(name))
+                    return 
     
     def days(self):
         markup = types.InlineKeyboardMarkup()
