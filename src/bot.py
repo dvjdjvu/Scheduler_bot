@@ -420,7 +420,7 @@ class Sheduler():
                     
             events = men.get('events', [])
 
-            if self.find(events) == False :
+            if self.find(events, name) == False :
                 # Создаем новое событие
                 event = {}
                 event['name'] = name
@@ -439,7 +439,7 @@ class Sheduler():
                 self.bot.send_message(_id, 'Напоминание {} уже существует'.format(name))
     
     # Поиск события по имени
-    def find(self, events):
+    def find(self, events, name):
         flag = False
         # Ищем событие по имени
         for event in events:
