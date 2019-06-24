@@ -4,11 +4,8 @@
 import bot
 import mongo
 
-if __name__ == "__main__":
-    #_mongo = mongo.mongo()
-    
+if __name__ == "__main__":    
     bot = bot.Sheduler()
-    
     bot.run()
 
 

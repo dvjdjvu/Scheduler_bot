@@ -142,10 +142,10 @@ updater.start_polling()
 '''
 class Sheduler():
     
-    def __init__(self, _mongo):
+    def __init__(self):
         self.bot = telebot.TeleBot(ShedulerToken.token)
         
-        self.mongo = _mongo
+        self.mongo = mongo.mongo()
         
         self.threadTimer = Thread(target=self.send_message, args=("Напоминание!",))
         
