@@ -333,8 +333,8 @@ class Sheduler():
             
             
         @self.bot.message_handler(commands=['menu'])
-        def start(message):
-            self.menu()
+        def menu(message):
+            self.menu(message)
             return
             
             markup = types.InlineKeyboardMarkup()
@@ -379,7 +379,7 @@ class Sheduler():
         self.threadTimer.do_run = False
         self.threadTimer.join()
     
-    def menu(self):
+    def menu(self, message):
         markup = types.InlineKeyboardMarkup()
         button_events = types.InlineKeyboardButton(text='Ваши напоминания', callback_data='events')
         button_new = types.InlineKeyboardButton(text='Добавить новое', callback_data='new')
