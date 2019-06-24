@@ -252,7 +252,7 @@ class Sheduler():
                             event['status'] = True 
                             self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
                             
-                            self.bot.send_message(message.chat.id, 'Отправка напоминания {} включена.'.format(name))
+                            self.bot.send_message(message.chat.id, 'Отправка напоминания {} в день {} включена.'.format(name, i + 2))
                             break
         
         # Выключаем напоминание по имени.
@@ -293,7 +293,7 @@ class Sheduler():
                                 
                             self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
                             
-                            self.bot.send_message(message.chat.id, 'Отправка напоминания {} выключена.'.format(name))
+                            self.bot.send_message(message.chat.id, 'Отправка напоминания {} в день {} выключена.'.format(name, i + 2))
                             break
                 
         # Список напоминаний пользователя
@@ -456,7 +456,7 @@ class Sheduler():
                 event['name'] = name
                 event['time'] = time
                 event['text'] = text
-                event['status'] = True 
+                #event['status'] = True 
                 event['days'] = {'1': True, '2': True, '3': True, '4': True, '5': True, '6': True, '7': True}
                         
                 events.append(event)
@@ -514,7 +514,7 @@ class Sheduler():
                         
                         #print(_time, _time_user)
                         
-                        if _time == _time_user and event['days'][str(now.weekday() + 1)] == True:
+                        if _time == _time_user and event['status'] and event['days'][str(now.weekday() + 1)] == True:
                             self.bot.send_message(men['id'], event['text'])
                 
             time.sleep(45)
