@@ -368,9 +368,9 @@ class Sheduler():
             elif data['c'] == 'add_day' :
                 
                 if self.event_new['days'][data['day']] == 'X' :
-                    self.event_new['days'][data['day']] == 'V'
+                    self.event_new['days'][data['day']] = 'V'
                 else :
-                    self.event_new['days'][data['day']] == 'X'
+                    self.event_new['days'][data['day']] = 'X'
                 
                 self.days(call.message)
                     
