@@ -146,6 +146,8 @@ class Sheduler():
     event_new = {}
     
     def __init__(self):
+        self.menu_clear()
+        
         self.bot = telebot.TeleBot(ShedulerToken.token)
         
         self.mongo = mongo.mongo()
@@ -363,6 +365,14 @@ class Sheduler():
                 self.menu_del(call.message)
             elif data['c'] == 'menu' :
                 self.menu(call.message)
+            elif data['c'] == 'add_day' :
+                
+                if self.event_new['days'][data['day']] == 'X' :
+                    self.event_new['days'][data['day']] == 'V'
+                else :
+                    self.event_new['days'][data['day']] == 'X'
+                
+                self.days(call.message)
                     
         
         @self.bot.message_handler(content_types=['text'])
@@ -407,6 +417,7 @@ class Sheduler():
     
     def menu_clear(self):
         self.event_new = {}
+        self.event_new['days'] = {'1': 'X', '2': 'X', '3': 'X', '4': 'X', '5': 'X', '6': 'X', '7': 'X'}
         self.menu_new_status = ''        
     
     def del_event(self, message, name):
@@ -518,16 +529,30 @@ class Sheduler():
     
     def days(self, message):
         markup = types.InlineKeyboardMarkup()
-        button_Monday = types.InlineKeyboardButton(text='Понедельник', callback_data=json.dumps({'c': 'add_day', 'day': 1}))
-        button_Tuesday = types.InlineKeyboardButton(text='Вторник', callback_data=json.dumps({'c': 'add_day', 'day': 2}))
-        button_Wednesday = types.InlineKeyboardButton(text='Среда', callback_data=json.dumps({'c': 'add_day', 'day': 3}))
-        button_Thursday = types.InlineKeyboardButton(text='Четверг', callback_data=json.dumps({'c': 'add_day', 'day': 4}))
-        button_Friday = types.InlineKeyboardButton(text='Пятница', callback_data=json.dumps({'c': 'add_day', 'day': 5}))
-        button_Saturday = types.InlineKeyboardButton(text='Суббота', callback_data=json.dumps({'c': 'add_day', 'day': 6}))
-        button_Sunday = types.InlineKeyboardButton(text='Воскресенье', callback_data=json.dumps({'c': 'add_day', 'day': 7}))
-        markup.add(button_Monday, button_Tuesday, button_Wednesday)
-        markup.add(button_Thursday, button_Friday)
-        markup.add(button_Saturday, button_Sunday)
+        button_Monday = types.InlineKeyboardButton(text='Понедельник', callback_data=json.dumps({'c': 'add_day', 'day': '1'}))
+        button_Tuesday = types.InlineKeyboardButton(text='Вторник', callback_data=json.dumps({'c': 'add_day', 'day': '2'}))
+        button_Wednesday = types.InlineKeyboardButton(text='Среда', callback_data=json.dumps({'c': 'add_day', 'day': '3'}))
+        button_Thursday = types.InlineKeyboardButton(text='Четверг', callback_data=json.dumps({'c': 'add_day', 'day': '4'}))
+        button_Friday = types.InlineKeyboardButton(text='Пятница', callback_data=json.dumps({'c': 'add_day', 'day': '5'}))
+        button_Saturday = types.InlineKeyboardButton(text='Суббота', callback_data=json.dumps({'c': 'add_day', 'day': '6'}))
+        button_Sunday = types.InlineKeyboardButton(text='Воскресенье', callback_data=json.dumps({'c': 'add_day', 'day': '7'}))
+        
+        button_Monday_check = types.InlineKeyboardButton(text=self.event_new['days']['1'], callback_data=json.dumps({'c': 'add_day', 'day': '1'}))
+        button_Tuesday_check = types.InlineKeyboardButton(text=self.event_new['days']['2'], callback_data=json.dumps({'c': 'add_day', 'day': '2'}))
+        button_Wednesday_check = types.InlineKeyboardButton(text=self.event_new['days']['3'], callback_data=json.dumps({'c': 'add_day', 'day': '3'}))
+        button_Thursday_check = types.InlineKeyboardButton(text=self.event_new['days']['4'], callback_data=json.dumps({'c': 'add_day', 'day': '4'}))
+        button_Friday_check = types.InlineKeyboardButton(text=self.event_new['days']['5'], callback_data=json.dumps({'c': 'add_day', 'day': '5'}))
+        button_Saturday_check = types.InlineKeyboardButton(text=self.event_new['days']['6'], callback_data=json.dumps({'c': 'add_day', 'day': '6'}))
+        button_Sunday_check = types.InlineKeyboardButton(text=self.event_new['days']['7'], callback_data=json.dumps({'c': 'add_day', 'day': '7'}))
+        
+        markup.add(button_Monday, button_Monday_check)
+        markup.add(button_Tuesday, button_Tuesday_check)
+        markup.add(button_Wednesday, button_Wednesday_check)
+        markup.add(button_Thursday, button_Thursday_check)
+        markup.add(button_Friday, button_Friday_check)
+        markup.add(button_Saturday, button_Saturday_check)
+        markup.add(button_Sunday, button_Sunday_check)
+        
         self.bot.send_message(chat_id=message.chat.id, text='Выберите дни недели напоминания', reply_markup=markup)
     
     def process_step(self, message):
