@@ -324,20 +324,6 @@ class Sheduler():
         @self.bot.message_handler(commands=['menu'])
         def menu(message):
             self.menu(message)
-            return
-            
-            markup = types.InlineKeyboardMarkup()
-            button_Monday = types.InlineKeyboardButton(text='Понедельник', callback_data='Понедельник')
-            button_Tuesday = types.InlineKeyboardButton(text='Вторник', callback_data='Вторник')
-            button_Wednesday = types.InlineKeyboardButton(text='Среда', callback_data='Среда')
-            button_Thursday = types.InlineKeyboardButton(text='Четверг', callback_data='Четверг')
-            button_Friday = types.InlineKeyboardButton(text='Пятница', callback_data='Пятница')
-            button_Saturday = types.InlineKeyboardButton(text='Суббота', callback_data='Суббота')
-            button_Sunday = types.InlineKeyboardButton(text='Воскресенье', callback_data='Воскресенье')
-            markup.add(button_Monday, button_Tuesday, button_Wednesday)
-            markup.add(button_Thursday, button_Friday)
-            markup.add(button_Saturday, button_Sunday)
-            self.bot.send_message(chat_id=message.chat.id, text='Выберите дни напоминаний', reply_markup=markup)
         
         @self.bot.callback_query_handler(func=lambda call: True)
         def query_handler(call):
@@ -347,6 +333,11 @@ class Sheduler():
             
             if call.data == 'events' :
                 self.events(call.message)
+            elif call.data == 'new' :
+                #self.bot.send_message(_id, text='Выберите дни напоминаний', reply_markup=markup)
+                pass
+            elif call.data == 'del' :
+                pass
             
                 
         
@@ -388,6 +379,16 @@ class Sheduler():
         markup.add(button_new)
         markup.add(button_del)
         self.bot.send_message(chat_id=message.chat.id, text='Выберите дни напоминаний', reply_markup=markup)
+    
+    def menu_del(self, message):
+        markup = types.InlineKeyboardMarkup()
+        
+        for men in self.mongo.coll.find({"id": message.chat.id}):
+            button = types.InlineKeyboardButton(text=men['name'], callback_data=men['name'])
+            markup.add(button)
+            
+        self.bot.send_message(chat_id=message.chat.id, text='Выберите напоминание для удаления', reply_markup=markup)
+        
         
     def day_off(self, _id, name, day):                
         for men in self.mongo.coll.find({"id": _id}):
