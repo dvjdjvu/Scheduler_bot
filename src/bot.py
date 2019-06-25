@@ -264,18 +264,7 @@ class Sheduler():
         @self.bot.message_handler(commands=['events'])
         def get_events(message):
             print('events', message.chat.id)
-            
-            if not self.mongo.coll.find({"id": message.chat.id}).count() :
-                self.bot.send_message(message.chat.id, 'Вы не зарегистрированы.')
-                return
-            
-            for men in self.mongo.coll.find({"id": message.chat.id}):
-                events = men.get('events', [])
-                _str = "Список событий:\n"
-                for event in events:
-                    _str += "{}: Время - '{}' Дни - '{}' Сообщение - '{}'\n".format(event['name'], event['time'], event.get('days', ''), event['text'])
-                    print(event)
-                self.bot.send_message(message.chat.id, _str[:-1])
+            self.events(message)
         
         # Удаляем напоминание
         @self.bot.message_handler(commands=['del'])
@@ -353,16 +342,12 @@ class Sheduler():
         @self.bot.callback_query_handler(func=lambda call: True)
         def query_handler(call):
             print(call.data)
-            return
-            call.data = json.loads(call.data)
             
-            if call.data['t'] == 'e' :
-                #self.bot.answer_callback_query(callback_query_id=call.id, text=str(call.data['name']))
-                
-                for men in self.mongo.coll.find({"id": call.data['id']}):
-                    events = men.get('events', [])
-                    for event in events:       
-                        self.bot.send_message(chat_id=call.data['id'], text='Выбрано напоминание: {}'.format(call.data['name']))
+            _id = call.message.chat.id
+            
+            if call.data == 'events' :
+                self.events(call.message)
+            
                 
         
         @self.bot.message_handler(content_types=['text'])
@@ -378,6 +363,19 @@ class Sheduler():
     def __del__(self):
         self.threadTimer.do_run = False
         self.threadTimer.join()
+    
+    def events(self, message) :
+        if not self.mongo.coll.find({"id": message.chat.id}).count() :
+            self.bot.send_message(message.chat.id, 'Вы не зарегистрированы.')
+            return
+        
+        for men in self.mongo.coll.find({"id": message.chat.id}):
+            events = men.get('events', [])
+            _str = "Список событий:\n"
+            for event in events:
+                _str += "{}: Время - '{}' Дни - '{}' Сообщение - '{}'\n".format(event['name'], event['time'], event.get('days', ''), event['text'])
+                self.bot.send_message(message.chat.id, _str[:-1])
+                print(event)
     
     def menu(self, message):
         markup = types.InlineKeyboardMarkup()
