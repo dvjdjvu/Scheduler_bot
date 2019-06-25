@@ -347,7 +347,7 @@ class Sheduler():
         
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
-            print('text', message.chat.id)
+            print('text', message.chat.id, self.menu_new_status)
             
             if self.menu_new_status == 'get_name' :
                 self.event_new['name'] = message.text
@@ -355,7 +355,7 @@ class Sheduler():
                 self.menu_new_status == 'get_time'
                 self.bot.send_message(message.chat.id, "Напишите время нового напоминания(формат: 17:15)")
                 
-                print(self.event_new)
+                print(self.event_new, self.menu_new_status)
             elif self.menu_new_status == 'get_time' :
                 if re.search(r'^\d{2,2}\:\d{2,2}$', message.text):
                     self.event_new['time'] = message.text
