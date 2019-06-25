@@ -388,7 +388,7 @@ class Sheduler():
             for event in events:
                 #button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'id': message.chat.id, 't': 'e'}))
                 #markup.add(button)
-                button = types.InlineKeyboardButton(text=men['name'], callback_data=men['name'])
+                button = types.InlineKeyboardButton(text=event['name'], callback_data=event['name'])
                 markup.add(button)                
             
         self.bot.send_message(chat_id=message.chat.id, text='Выберите напоминание для удаления', reply_markup=markup)
