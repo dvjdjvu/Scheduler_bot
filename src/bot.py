@@ -161,6 +161,8 @@ class Sheduler():
         # Помощь
         @self.bot.message_handler(commands=['help'])
         def help(message):
+            self.menu_clear()
+            
             _str = ''
             _str += '/help - помощь\n'
             _str += '/start - начать работу\n'
@@ -180,6 +182,8 @@ class Sheduler():
         # Регистрация в системе
         @self.bot.message_handler(commands=['start'])
         def get_start(message):
+            self.menu_clear()
+            
             print('start', message.chat.id)
             
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
@@ -198,6 +202,8 @@ class Sheduler():
         # Добавить напоминание
         @self.bot.message_handler(commands=['add'])
         def get_add(message):
+            self.menu_clear()
+            
             print('add', message.chat.id)
             
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
@@ -225,6 +231,8 @@ class Sheduler():
         # Включаем напоминание по имени.
         @self.bot.message_handler(commands=['on'])
         def get_on(message):
+            self.menu_clear()
+            
             print('on', message.chat.id)
             
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
@@ -248,6 +256,8 @@ class Sheduler():
         # Выключаем напоминание по имени.
         @self.bot.message_handler(commands=['off'])
         def get_off(message):
+            self.menu_clear()
+            
             print('off', message.chat.id)
             
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
@@ -271,12 +281,16 @@ class Sheduler():
         # Список напоминаний пользователя
         @self.bot.message_handler(commands=['events'])
         def get_events(message):
+            self.menu_clear()
+            
             print('events', message.chat.id)
             self.events(message)
         
         # Удаляем напоминание
         @self.bot.message_handler(commands=['del'])
         def get_del(message):
+            self.menu_clear()
+            
             print('del', message.chat.id)
             
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
@@ -295,11 +309,15 @@ class Sheduler():
         # Локация пользователя
         @self.bot.message_handler(commands=['geo'])
         def get_geo(message):
+            self.menu_clear()
+            
             print('geo', message.chat.id)
             self.geoGet(message)
     
         @self.bot.message_handler(commands=['days'])
         def get_days(message):
+            self.menu_clear()
+            
             print('days', message.chat.id)
             
             if not self.mongo.coll.find({"id": message.chat.id}).count() :
@@ -320,6 +338,8 @@ class Sheduler():
             
         @self.bot.message_handler(commands=['menu'])
         def menu(message):
+            self.menu_clear()
+            
             self.menu(message)
         
         @self.bot.callback_query_handler(func=lambda call: True)
@@ -368,9 +388,14 @@ class Sheduler():
                 print(self.event_new)
             elif self.menu_new_status == 'get_days' :
                 
-                self.event_new = {}
-                self.menu_new_status == ''
-                pass
+                self.days(message)
+                
+                #self.event_new = {}
+                #self.menu_new_status = ''
+                #pass
+            else :
+                self.bot.send_message(message.from_user.id, "Привет {}, используй /help ".format(men.get("first_name", '')))
+                
             '''
             if self.mongo.coll.find({"id": message.chat.id}).count() :
                 for men in self.mongo.coll.find({"id": message.chat.id}):
@@ -382,6 +407,10 @@ class Sheduler():
     def __del__(self):
         self.threadTimer.do_run = False
         self.threadTimer.join()
+    
+    def menu_clear(self):
+        self.event_new = {}
+        self.menu_new_status = ''        
     
     def del_event(self, message, name):
         for men in self.mongo.coll.find({"id": message.chat.id}):
@@ -490,15 +519,15 @@ class Sheduler():
                     self.bot.send_message(_id, 'Отправка напоминания {} включена.'.format(name))
                     return 
     
-    def days(self):
+    def days(self, message):
         markup = types.InlineKeyboardMarkup()
-        button_Monday = types.InlineKeyboardButton(text='Понедельник', callback_data='Понедельник')
-        button_Tuesday = types.InlineKeyboardButton(text='Вторник', callback_data='Вторник')
-        button_Wednesday = types.InlineKeyboardButton(text='Среда', callback_data='Среда')
-        button_Thursday = types.InlineKeyboardButton(text='Четверг', callback_data='Четверг')
-        button_Friday = types.InlineKeyboardButton(text='Пятница', callback_data='Пятница')
-        button_Saturday = types.InlineKeyboardButton(text='Суббота', callback_data='Суббота')
-        button_Sunday = types.InlineKeyboardButton(text='Воскресенье', callback_data='Воскресенье')
+        button_Monday = types.InlineKeyboardButton(text='Понедельник', callback_data=json.dumps({'c': 'add_day', 'day': 1}))
+        button_Tuesday = types.InlineKeyboardButton(text='Вторник', callback_data=json.dumps({'c': 'add_day', 'day': 2}))
+        button_Wednesday = types.InlineKeyboardButton(text='Среда', callback_data=json.dumps({'c': 'add_day', 'day': 3}))
+        button_Thursday = types.InlineKeyboardButton(text='Четверг', callback_data=json.dumps({'c': 'add_day', 'day': 4}))
+        button_Friday = types.InlineKeyboardButton(text='Пятница', callback_data=json.dumps({'c': 'add_day', 'day': 5}))
+        button_Saturday = types.InlineKeyboardButton(text='Суббота', callback_data=json.dumps({'c': 'add_day', 'day': 6}))
+        button_Sunday = types.InlineKeyboardButton(text='Воскресенье', callback_data=json.dumps({'c': 'add_day', 'day': 7}))
         markup.add(button_Monday, button_Tuesday, button_Wednesday)
         markup.add(button_Thursday, button_Friday)
         markup.add(button_Saturday, button_Sunday)
