@@ -329,14 +329,15 @@ class Sheduler():
         def query_handler(call):
             print(call.data)
             
+            data = json.load(call.data)
             _id = call.message.chat.id
             
-            if call.data == 'events' :
+            if data['c'] == 'events' :
                 self.events(call.message)
-            elif call.data == 'new' :
+            elif data['c'] == 'new' :
                 #self.bot.send_message(_id, text='Выберите дни напоминаний', reply_markup=markup)
                 pass
-            elif call.data == 'del' :
+            elif data['c'] == 'del' :
                 self.menu_del(call.message)
             
                 
@@ -371,16 +372,16 @@ class Sheduler():
     
     def menu(self, message):
         markup = types.InlineKeyboardMarkup()
-        button_events = types.InlineKeyboardButton(text='Ваши напоминания', callback_data='events')
-        button_new = types.InlineKeyboardButton(text='Добавить новое', callback_data='new')
-        button_del = types.InlineKeyboardButton(text='Удалить', callback_data='del')
+        button_events = types.InlineKeyboardButton(text='Ваши напоминания', callback_data=json.dumps({'c': 'events'}))
+        button_new = types.InlineKeyboardButton(text='Добавить новое', callback_data=json.dumps({'c': 'new'}))
+        button_del = types.InlineKeyboardButton(text='Удалить', callback_data=json.dumps({'c': 'del'}))
 
         markup.add(button_events)
         markup.add(button_new)
         markup.add(button_del)
         self.bot.send_message(chat_id=message.chat.id, text='Выберите дни напоминаний', reply_markup=markup)
     
-    def menu_del(self, message):
+    def menu_del_keyb(self, message):
         markup = types.InlineKeyboardMarkup()
         
         for men in self.mongo.coll.find({"id": message.chat.id}):
@@ -388,10 +389,14 @@ class Sheduler():
             for event in events:
                 #button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'id': message.chat.id, 't': 'e'}))
                 #markup.add(button)
-                button = types.InlineKeyboardButton(text=event['name'], callback_data=event['name'])
-                markup.add(button)                
-            
-        self.bot.send_message(chat_id=message.chat.id, text='Выберите напоминание для удаления', reply_markup=markup)
+                button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'c': 'del', 'name': event['name']}))
+                markup.add(button)
+                
+        return markup
+    
+    def menu_del(self, message):              
+        self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Выберите напоминание для удаления', reply_markup=menu_del_keyb())
+        #self.bot.send_message(chat_id=message.chat.id, text='Выберите напоминание для удаления', reply_markup=markup)
         
         
     def day_off(self, _id, name, day):                
