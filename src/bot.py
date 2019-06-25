@@ -444,7 +444,7 @@ class Sheduler():
                 self.bot.send_message(message.chat.id, 'У вас нет напоминаний')
                 return
                 
-            _str = "Список событий:\n"
+            _str = "Список напоминаний:\n"
             for event in events:
                 _str += "{}: Время - '{}' Дни - '{}' Сообщение - '{}'\n".format(event['name'], event['time'], event.get('days', ''), event['text'])
                 print(event)
@@ -482,8 +482,8 @@ class Sheduler():
         return markup
     
     def menu_del(self, message):              
-        #self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Выберите напоминание для удаления', reply_markup=self.menu_del_keyb(message))
-        self.bot.send_message(chat_id=message.chat.id, text='Выберите напоминание для удаления', reply_markup=self.menu_del_keyb(message))
+        self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Выберите напоминание для удаления', reply_markup=self.menu_del_keyb(message))
+        #self.bot.send_message(chat_id=message.chat.id, text='Выберите напоминание для удаления', reply_markup=self.menu_del_keyb(message))
         
         
     def day_off(self, _id, name, day):                
