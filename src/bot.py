@@ -281,19 +281,8 @@ class Sheduler():
                 self.bot.send_message(message.chat.id, 'Формат команды: /off имя_события')
             else :
                 name = args[1]
-            
-                for men in self.mongo.coll.find({"id": message.chat.id}):
-                    events = men.get('events', [])
-                    for event in events:
-                        if event['name'] == name :
-                            events.remove(event)
-                            self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
-                            
-                            self.bot.send_message(message.chat.id, 'Напоминания {} удалено'.format(name))
-                            return
-                        
-                self.bot.send_message(message.chat.id, 'Напоминания {} нет'.format(name))
-                        
+                
+                self.del_event(message, name)
                         
         # Локация пользователя
         @self.bot.message_handler(commands=['geo'])
@@ -338,6 +327,11 @@ class Sheduler():
                 #self.bot.send_message(_id, text='Выберите дни напоминаний', reply_markup=markup)
                 pass
             elif data['c'] == 'del' :
+                
+                name = data.get('name')
+                if name :
+                    self.del_event(message, name)
+                
                 self.menu_del(call.message)
             
                 
@@ -355,6 +349,19 @@ class Sheduler():
     def __del__(self):
         self.threadTimer.do_run = False
         self.threadTimer.join()
+    
+    def del_event(self, message, name):
+        for men in self.mongo.coll.find({"id": message.chat.id}):
+            events = men.get('events', [])
+            for event in events:
+                if event['name'] == name :
+                    events.remove(event)
+                    self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
+                    
+                    self.bot.send_message(message.chat.id, 'Напоминания {} удалено'.format(name))
+                    return
+                
+        self.bot.send_message(message.chat.id, 'Напоминания {} нет'.format(name))
     
     def events(self, message) :
         if not self.mongo.coll.find({"id": message.chat.id}).count() :
@@ -391,7 +398,7 @@ class Sheduler():
                 #markup.add(button)
                 button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'c': 'del', 'name': event['name']}))
                 markup.add(button)
-                
+            
         return markup
     
     def menu_del(self, message):              
