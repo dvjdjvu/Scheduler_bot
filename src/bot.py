@@ -163,9 +163,14 @@ class Sheduler():
             _str += '/start - начать работу\n'
             _str += '/add name_event time text - добавить напоминание. Формат времени 16:00\n'
             _str += '/on name_event - включить напоминание\n'
+            _str += '/on name_event date_number - включить напоминание в дни недели\n'
             _str += '/off name_event - отключить напоминание\n'
+            _str += '/off name_event date_number - выключить напоминание в дни недели\n'
             _str += '/events - список напоминаний\n'
             _str += '/geo - взять локацию, для уточнения времени\n'
+            
+            _str += '\n'
+            _str += '/menu - эксперементальная версия с кнопками управления\n'
             
             self.bot.send_message(message.chat.id, _str)
         
@@ -324,8 +329,8 @@ class Sheduler():
             if data['c'] == 'events' :
                 self.events(call.message)
             elif data['c'] == 'new' :
-                #self.bot.send_message(_id, text='Выберите дни напоминаний', reply_markup=markup)
-                pass
+                self.bot.send_message(_id, text='Напишите название нового напоминания')
+                
             elif data['c'] == 'del' :
                 
                 name = data.get('name')
@@ -381,7 +386,8 @@ class Sheduler():
     def menu(self, message):
         markup = types.InlineKeyboardMarkup()
         button_events = types.InlineKeyboardButton(text='Ваши напоминания', callback_data=json.dumps({'c': 'events'}))
-        button_new = types.InlineKeyboardButton(text='Добавить новое', callback_data=json.dumps({'c': 'new'}))
+        button_new = types.InlineKeyboardButton(text='Добавить', callback_data=json.dumps({'c': 'new'}))
+        button_new = types.InlineKeyboardButton(text='Изменить', callback_data=json.dumps({'c': 'change'}))
         button_del = types.InlineKeyboardButton(text='Удалить', callback_data=json.dumps({'c': 'del'}))
 
         markup.add(button_events)
@@ -427,7 +433,7 @@ class Sheduler():
             events = men.get('events', [])
             for event in events:
                 if event['name'] == name :
-                    event['days'][day] = False
+                    event['days'][day] = True
                         
                     self.mongo.coll.update({'id': _id}, {"$set": {'events': events}})
                     
@@ -450,7 +456,7 @@ class Sheduler():
             events = men.get('events', [])
             for event in events:
                 if event['name'] == name :
-                    event['status'] = False 
+                    event['status'] = True 
                     self.mongo.coll.update({'id': _id}, {"$set": {'events': events}})
                     
                     self.bot.send_message(_id, 'Отправка напоминания {} включена.'.format(name))
