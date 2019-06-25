@@ -395,7 +395,7 @@ class Sheduler():
         return markup
     
     def menu_del(self, message):              
-        self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Выберите напоминание для удаления', reply_markup=self.menu_del_keyb())
+        self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Выберите напоминание для удаления', reply_markup=self.menu_del_keyb(message))
         #self.bot.send_message(chat_id=message.chat.id, text='Выберите напоминание для удаления', reply_markup=markup)
         
         
