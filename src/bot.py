@@ -390,7 +390,7 @@ class Sheduler():
                 print(self.event_new)
 
             else :
-                self.bot.send_message(message.from_user.id, "Привет {}, используй /help ".format(men.get("first_name", '')))
+                self.bot.send_message(message.chat.id, "Привет {}, используй /help ".format(men.get("first_name", '')))
                 
             '''
             if self.mongo.coll.find({"id": message.chat.id}).count() :
