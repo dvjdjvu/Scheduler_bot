@@ -352,7 +352,7 @@ class Sheduler():
             if self.menu_new_status == 'get_name' :
                 self.event_new['name'] = message.text
             
-                self.menu_new_status == 'get_time'
+                self.menu_new_status = 'get_time'
                 self.bot.send_message(message.chat.id, "Напишите время нового напоминания(формат: 17:15)")
                 
                 print(self.event_new, self.menu_new_status)
@@ -361,7 +361,7 @@ class Sheduler():
                     self.event_new['time'] = message.text
                     
                     self.bot.send_message(message.chat.id, "Выберите дни напоминаний")
-                    self.menu_new_status == 'get_days'
+                    self.menu_new_status = 'get_days'
                 else :
                     self.bot.send_message(message.chat.id, "Время {} некорректно".format(message.text))
                     
@@ -369,6 +369,7 @@ class Sheduler():
             elif self.menu_new_status == 'get_days' :
                 
                 self.event_new = {}
+                self.menu_new_status == ''
                 pass
             '''
             if self.mongo.coll.find({"id": message.chat.id}).count() :
