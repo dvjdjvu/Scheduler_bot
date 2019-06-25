@@ -381,20 +381,14 @@ class Sheduler():
                     self.event_new['time'] = message.text
                     
                     self.bot.send_message(message.chat.id, "Выберите дни напоминаний")
-                    self.menu_new_status = 'get_days'
+                    self.menu_new_status = ''
                     
                     self.days(message)
                 else :
                     self.bot.send_message(message.chat.id, "Время {} некорректно".format(message.text))
                     
                 print(self.event_new)
-            elif self.menu_new_status == 'get_days' :
-                
-                pass
-                
-                #self.event_new = {}
-                #self.menu_new_status = ''
-                #pass
+
             else :
                 self.bot.send_message(message.from_user.id, "Привет {}, используй /help ".format(men.get("first_name", '')))
                 
