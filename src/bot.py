@@ -329,7 +329,7 @@ class Sheduler():
         def query_handler(call):
             print(call.data)
             
-            data = json.load(call.data)
+            data = json.loads(call.data)
             _id = call.message.chat.id
             
             if data['c'] == 'events' :
