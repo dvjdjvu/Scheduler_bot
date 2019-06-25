@@ -400,7 +400,9 @@ class Sheduler():
                 print(self.event_new)
 
             else :
-                for men in self.mongo.coll.find({"id": message.chat.id}):
+                
+                men = self.mongo.coll.findOne({"id": message.chat.id})
+                if men :
                     self.bot.send_message(message.from_user.id, "Привет {}, используй /help ".format(men.get("first_name", '')))
                 
             '''
