@@ -334,7 +334,7 @@ class Sheduler():
                 
                 self.menu_del(call.message)
             elif data['c'] == 'menu' :
-                self.menu()
+                self.menu(call.message)
                     
         
         @self.bot.message_handler(content_types=['text'])
@@ -387,7 +387,7 @@ class Sheduler():
         markup.add(button_events)
         markup.add(button_new)
         markup.add(button_del)
-        self.bot.send_message(chat_id=message.chat.id, text='Выберите дни напоминаний', reply_markup=markup)
+        self.bot.send_message(chat_id=message.chat.id, text='Главное меню', reply_markup=markup)
     
     def menu_del_keyb(self, message):
         markup = types.InlineKeyboardMarkup()
