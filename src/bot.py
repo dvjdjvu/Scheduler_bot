@@ -330,7 +330,7 @@ class Sheduler():
                 
                 name = data.get('name')
                 if name :
-                    self.del_event(message, name)
+                    self.del_event(call.message, name)
                 
                 self.menu_del(call.message)
             
