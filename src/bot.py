@@ -337,7 +337,7 @@ class Sheduler():
                 #self.bot.send_message(_id, text='Выберите дни напоминаний', reply_markup=markup)
                 pass
             elif call.data == 'del' :
-                pass
+                self.menu_del(message)
             
                 
         
