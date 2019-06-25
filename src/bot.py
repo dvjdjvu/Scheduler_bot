@@ -333,8 +333,9 @@ class Sheduler():
                     self.del_event(call.message, name)
                 
                 self.menu_del(call.message)
-            
-                
+            elif data['c'] == 'menu' :
+                self.menu()
+                    
         
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
@@ -398,7 +399,10 @@ class Sheduler():
                 #markup.add(button)
                 button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'c': 'del', 'name': event['name']}))
                 markup.add(button)
-            
+        
+        button = types.InlineKeyboardButton(text='Меню', callback_data=json.dumps({'c': 'menu'}))
+        markup.add(button)
+        
         return markup
     
     def menu_del(self, message):              
