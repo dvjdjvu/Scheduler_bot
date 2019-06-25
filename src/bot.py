@@ -465,6 +465,8 @@ class Sheduler():
         markup.add(button_change)
         markup.add(button_del)
         
+        print('message.message_id', message.message_id)
+        
         if message.message_id :
             self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Главное меню', reply_markup=markup)
         else :
