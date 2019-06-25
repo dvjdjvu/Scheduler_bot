@@ -423,7 +423,8 @@ class Sheduler():
         self.menu_new_status = ''        
     
     def del_event(self, message, name):
-        for men in self.mongo.coll.find({"id": message.chat.id}):
+        men = self.mongo.coll.find_one({"id": message.chat.id})
+        if men :
             events = men.get('events', [])
             for event in events:
                 if event['name'] == name :
@@ -436,18 +437,21 @@ class Sheduler():
         self.bot.send_message(message.chat.id, 'Напоминания {} нет'.format(name))
     
     def events(self, message) :
-        if not self.mongo.coll.find({"id": message.chat.id}).count() :
-            self.bot.send_message(message.chat.id, 'Вы не зарегистрированы.')
-            return
-        
-        for men in self.mongo.coll.find({"id": message.chat.id}):
+        men = self.mongo.coll.find_one({"id": message.chat.id})
+        if men :
             events = men.get('events', [])
+            if len(events) == 0 :
+                self.bot.send_message(message.chat.id, 'У вас нет напоминаний')
+                return
+                
             _str = "Список событий:\n"
             for event in events:
                 _str += "{}: Время - '{}' Дни - '{}' Сообщение - '{}'\n".format(event['name'], event['time'], event.get('days', ''), event['text'])
                 print(event)
                 
             self.bot.send_message(message.chat.id, _str[:-1])
+        else :
+            self.bot.send_message(message.chat.id, 'Вы не зарегистрированы.')
     
     def menu(self, message):
         markup = types.InlineKeyboardMarkup()
@@ -465,11 +469,10 @@ class Sheduler():
     def menu_del_keyb(self, message):
         markup = types.InlineKeyboardMarkup()
         
-        for men in self.mongo.coll.find({"id": message.chat.id}):
+        men = self.mongo.coll.find_one({"id": message.chat.id})
+        if men :
             events = men.get('events', [])
             for event in events:
-                #button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'id': message.chat.id, 't': 'e'}))
-                #markup.add(button)
                 button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'c': 'del', 'name': event['name']}))
                 markup.add(button)
         
@@ -484,7 +487,8 @@ class Sheduler():
         
         
     def day_off(self, _id, name, day):                
-        for men in self.mongo.coll.find({"id": _id}):
+        men = self.mongo.coll.find_one({"id": _id})
+        if men :
             events = men.get('events', [])
             for event in events:
                 if event['name'] == name :
@@ -496,7 +500,8 @@ class Sheduler():
                     return
     
     def day_on(self, _id, name, day):
-        for men in self.mongo.coll.find({"id": _id}):
+        men = self.mongo.coll.find_one({"id": _id})
+        if men :
             events = men.get('events', [])
             for event in events:
                 if event['name'] == name :
@@ -508,7 +513,8 @@ class Sheduler():
                     return
     
     def days_off(self, _id, name):
-        for men in self.mongo.coll.find({"id": _id}):
+        men = self.mongo.coll.find_one({"id": _id})
+        if men :
             events = men.get('events', [])
             for event in events:
                 if event['name'] == name :
@@ -519,7 +525,8 @@ class Sheduler():
                     return
     
     def days_on(self, _id, name):
-        for men in self.mongo.coll.find({"id": _id}):
+        men = self.mongo.coll.find_one({"id": _id})
+        if men :
             events = men.get('events', [])
             for event in events:
                 if event['name'] == name :
@@ -577,7 +584,8 @@ class Sheduler():
         self.geoGet(message)
     
     def add(self, _id, name, time, text):
-        for men in self.mongo.coll.find({"id": _id}):
+        men = self.mongo.coll.find_one({"id": _id})
+        if men :
             if not men.get('timezone_offset', None) :
                 self.bot.send_message(_id, 'Отправьте своё местоположение для уточнения вашей временной зоны')
                     
