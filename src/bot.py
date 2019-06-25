@@ -142,6 +142,9 @@ updater.start_polling()
 '''
 class Sheduler():
     
+    menu_new_status = ''
+    event_new = {}
+    
     def __init__(self):
         self.bot = telebot.TeleBot(ShedulerToken.token)
         
@@ -330,7 +333,7 @@ class Sheduler():
                 self.events(call.message)
             elif data['c'] == 'new' :
                 self.bot.send_message(_id, text='Напишите название нового напоминания')
-                
+                self.menu_new_status = 'get_name'
             elif data['c'] == 'del' :
                 
                 name = data.get('name')
@@ -346,11 +349,34 @@ class Sheduler():
         def get_text(message):
             print('text', message.chat.id)
             
+            if self.menu_new_status == 'get_name' :
+                self.event_new['name'] = message.text
+            
+                self.menu_new_status == 'get_time'
+                self.bot.send_message(message.chat.id, "Напишите время нового напоминания(формат: 17:15)")
+                
+                print(self.event_new)
+            elif self.menu_new_status == 'get_time' :
+                if re.search(r'^\d{2,2}\:\d{2,2}$', message.text):
+                    self.event_new['time'] = message.text
+                    
+                    self.bot.send_message(message.chat.id, "Выберите дни напоминаний")
+                    self.menu_new_status == 'get_days'
+                else :
+                    self.bot.send_message(message.chat.id, "Время {} некорректно".format(message.text))
+                    
+                print(self.event_new)
+            elif self.menu_new_status == 'get_days' :
+                
+                self.event_new = {}
+                pass
+            '''
             if self.mongo.coll.find({"id": message.chat.id}).count() :
                 for men in self.mongo.coll.find({"id": message.chat.id}):
                     self.bot.send_message(message.from_user.id, "Привет {}, используй /help ".format(men.get("first_name", '')))
             else :
                 self.bot.send_message(message.from_user.id, "Ты ко мне не подключен, напиши /start")
+            '''
           
     def __del__(self):
         self.threadTimer.do_run = False
