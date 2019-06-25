@@ -387,11 +387,12 @@ class Sheduler():
         markup = types.InlineKeyboardMarkup()
         button_events = types.InlineKeyboardButton(text='Ваши напоминания', callback_data=json.dumps({'c': 'events'}))
         button_new = types.InlineKeyboardButton(text='Добавить', callback_data=json.dumps({'c': 'new'}))
-        button_new = types.InlineKeyboardButton(text='Изменить', callback_data=json.dumps({'c': 'change'}))
+        button_change = types.InlineKeyboardButton(text='Изменить', callback_data=json.dumps({'c': 'change'}))
         button_del = types.InlineKeyboardButton(text='Удалить', callback_data=json.dumps({'c': 'del'}))
 
         markup.add(button_events)
         markup.add(button_new)
+        markup.add(button_change)
         markup.add(button_del)
         self.bot.send_message(chat_id=message.chat.id, text='Главное меню', reply_markup=markup)
     
