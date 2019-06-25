@@ -465,8 +465,10 @@ class Sheduler():
         markup.add(button_change)
         markup.add(button_del)
         
-        self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Главное меню', reply_markup=markup)
-        #self.bot.send_message(chat_id=message.chat.id, text='Главное меню', reply_markup=markup)
+        if message.message_id :
+            self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Главное меню', reply_markup=markup)
+        else :
+            self.bot.send_message(chat_id=message.chat.id, text='Главное меню', reply_markup=markup)
     
     def menu_del_keyb(self, message):
         markup = types.InlineKeyboardMarkup()
