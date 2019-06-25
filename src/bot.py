@@ -374,8 +374,9 @@ class Sheduler():
             _str = "Список событий:\n"
             for event in events:
                 _str += "{}: Время - '{}' Дни - '{}' Сообщение - '{}'\n".format(event['name'], event['time'], event.get('days', ''), event['text'])
-                self.bot.send_message(message.chat.id, _str[:-1])
                 print(event)
+                
+            self.bot.send_message(message.chat.id, _str[:-1])
     
     def menu(self, message):
         markup = types.InlineKeyboardMarkup()
