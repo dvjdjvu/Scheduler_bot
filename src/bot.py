@@ -460,7 +460,7 @@ class Sheduler():
         
         try :
             self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Выберите дни напоминаний', reply_markup=markup)
-        else :
+        except Exception as e :
             self.bot.send_message(chat_id=message.chat.id, text='Выберите дни напоминаний')
     
     def process_step(self, message):
