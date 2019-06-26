@@ -263,6 +263,8 @@ class Sheduler():
             if self.menu_new_status == 'get_name' :
                 self.event_new['name'] = message.text
             
+                #self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
+            
                 self.menu_new_status = 'get_time'
                 self.bot.send_message(message.chat.id, "Напишите время нового напоминания(формат: 17:15)")
                 
@@ -271,14 +273,19 @@ class Sheduler():
                 if re.search(r'^\d{2,2}\:\d{2,2}$', message.text):
                     self.event_new['time'] = message.text
                     
-                    self.menu_new_status = ''
+                    self.menu_new_status = 'get_text'
                     
-                    self.days(message)
+                    self.bot.send_message(message.chat.id, "Напишите текст напоминания")
+                    
                 else :
                     self.bot.send_message(message.chat.id, "Время {} некорректно".format(message.text))
                     
                 print(self.event_new)
-
+            elif self.menu_new_status == 'get_text' :
+                self.event_new['text'] = message.text
+                self.menu_new_status = ''
+                
+                self.days(message)
             else :
                 
                 men = self.mongo.coll.find_one({"id": message.chat.id})
