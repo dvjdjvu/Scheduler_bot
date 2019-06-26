@@ -21,125 +21,6 @@ from telegram.ext import Updater, Filters
 from telegram.ext import CommandHandler, CallbackQueryHandler, MessageHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
-'''
-menu_level = 'main_menu'
-
-main_menu_message = 'Меню:'
-events_menu_message = 'Напоминания:'
-add_menu_message = 'Введите имя нового напоминания:'
-del_menu_message = 'Выберите напоминание которое хотите удалить:'
-
-Mongo = mongo.mongo()
-
-############################# Menu #########################################
-def menu_handler(bot, update):
-    global menu_level
-    menu_level = 'main_menu'
-    
-    update.message.reply_text(main_menu_message, reply_markup=main_menu_keyboard())
-
-def text_handler(bot, update):
-    global menu_level
-    print(menu_level, update.message.text)
-    if menu_lvel == 'add_menu' :
-        bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=add_menu_message)
-
-def main_menu(bot, update):
-    global menu_level
-    menu_level = 'main_menu'
-    query = update.callback_query
-    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=main_menu_message, reply_markup=main_menu_keyboard())
-
-def location_menu(bot, update):
-    global menu_level
-    print('location_menu')
-    menu_level = 'location_menu'
-
-def events_menu(bot, update):
-    global menu_level
-    menu_level = 'events_menu'
-    
-    query = update.callback_query
-    
-    if not Mongo.coll.find({"id": query.message.chat_id}).count() :
-        return
-    
-    for men in Mongo.coll.find({"id": query.message.chat_id}):
-        events = men.get('events', [])
-        _str = events_menu_message + "\n"
-        for event in events:
-            _str += "'{}' Время: '{}' Сообщение: '{}'\n".format(event['name'], event['time'], event['text'])
-    
-    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=_str, reply_markup=events_menu_keyboard())
-
-def add_menu(bot, update):
-    global menu_level
-    menu_level = 'add_menu'
-    query = update.callback_query
-    #bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=add_menu_message, reply_markup=add_menu_keyboard())
-    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=add_menu_message)
-    #menu_level = 'add_menu_get_name'
-
-def del_menu(bot, update):
-    global menu_level
-    menu_level = 'del_menu'
-    query = update.callback_query
-    
-    for men in Mongo.coll.find({"id": query.message.chat_id}):
-        events = men.get('events', [])
-        _str = events_menu_message + "\n"
-        for event in events:
-            _str += "'{}' Время: '{}' Сообщение: '{}'\n".format(event['name'], event['time'], event['text'])
-    
-    bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text=del_menu_message, reply_markup=del_menu_keyboard())
-
-def first_submenu(bot, update):
-    pass
-
-def second_submenu(bot, update):
-    pass
-
-def third_submenu(bot, update):
-    pass
-
-############################ Keyboards #########################################
-def main_menu_keyboard():
-    keyboard = [[InlineKeyboardButton('Ваши напоминания', callback_data='events')],
-                [InlineKeyboardButton('Добавить новое', callback_data='add')],
-                [InlineKeyboardButton('Удалить', callback_data='del')],
-                [InlineKeyboardButton('Передать время', callback_data='location')]]
-    return InlineKeyboardMarkup(keyboard)
-
-def events_menu_keyboard():
-    keyboard = [[InlineKeyboardButton('Меню', callback_data='main')]]
-    return InlineKeyboardMarkup(keyboard)
-
-def add_menu_keyboard():
-    keyboard = [[InlineKeyboardButton('Меню', callback_data='main')]]
-    return InlineKeyboardMarkup(keyboard)
-
-def del_menu_keyboard():
-    keyboard = [[InlineKeyboardButton('Submenu 3-1', callback_data='m3_1')],
-                [InlineKeyboardButton('Submenu 3-2', callback_data='m3_2')],
-                [InlineKeyboardButton('Меню', callback_data='main')]]
-    return InlineKeyboardMarkup(keyboard)
-
-updater = Updater(ShedulerToken.token)
-
-updater.dispatcher.add_handler(CommandHandler(['start', 'menu'], menu_handler))
-updater.dispatcher.add_handler(MessageHandler(Filters.text, text_handler))
-updater.dispatcher.add_handler(CallbackQueryHandler(main_menu, pattern='main'))
-updater.dispatcher.add_handler(CallbackQueryHandler(events_menu, pattern='events'))
-updater.dispatcher.add_handler(CallbackQueryHandler(add_menu, pattern='add'))
-updater.dispatcher.add_handler(CallbackQueryHandler(del_menu, pattern='del'))
-updater.dispatcher.add_handler(CallbackQueryHandler(first_submenu, pattern='m1_1'))
-updater.dispatcher.add_handler(CallbackQueryHandler(second_submenu, pattern='m2_1'))
-updater.dispatcher.add_handler(CallbackQueryHandler(third_submenu, pattern='m3_1'))
-updater.dispatcher.add_handler(CallbackQueryHandler(location_menu, pattern='location'))
-
-updater.start_polling()
-
-'''
 class Sheduler():
     
     menu_new_status = ''
@@ -443,7 +324,7 @@ class Sheduler():
         if men :
             events = men.get('events', [])
             if len(events) == 0 :
-                self.bot.send_message(message.chat.id, 'У вас нет напоминаний')
+                self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, 'У вас нет напоминаний', reply_markup=types.InlineKeyboardMarkup().add(self.menu_button()))
                 return
                 
             _str = "Список напоминаний:\n"
@@ -452,8 +333,10 @@ class Sheduler():
                 print(event)
                 
             self.bot.send_message(message.chat.id, _str[:-1])
+            self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, _str[:-1], reply_markup=types.InlineKeyboardMarkup().add(self.menu_button()))
         else :
-            self.bot.send_message(message.chat.id, 'Вы не зарегистрированы.')
+            self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, 'Вы не зарегистрированы', reply_markup=types.InlineKeyboardMarkup().add(self.menu_button()))
+            #self.bot.send_message(message.chat.id, 'Вы не зарегистрированы')
     
     def menu(self, message):
         markup = types.InlineKeyboardMarkup()
@@ -474,6 +357,9 @@ class Sheduler():
         except Exception as e :
             self.bot.send_message(chat_id=message.chat.id, text='Главное меню', reply_markup=markup)
     
+    def menu_button(self) :
+        return types.InlineKeyboardButton(text='Меню', callback_data=json.dumps({'c': 'menu'}))
+    
     def menu_del_keyb(self, message):
         markup = types.InlineKeyboardMarkup()
         
@@ -484,8 +370,7 @@ class Sheduler():
                 button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'c': 'del', 'name': event['name']}))
                 markup.add(button)
         
-        button = types.InlineKeyboardButton(text='Меню', callback_data=json.dumps({'c': 'menu'}))
-        markup.add(button)
+        markup.add(self.menu_button())
         
         return markup
     
