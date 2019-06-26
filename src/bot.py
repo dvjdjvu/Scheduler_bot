@@ -285,7 +285,7 @@ class Sheduler():
                 men['event_new']['menu_new_status'] = ''
                 self.mongo.coll.update({'id': message.chat.id}, {"$set": {'event_new': men['event_new']}})
                 
-                self.add(message.chat.id, self.event_new['name'], self.event_new['time'], self.event_new['text'], self.event_new['days'])
+                self.add(message.chat.id, men['event_new']['name'], men['event_new']['time'], men['event_new']['text'], men['event_new']['days'])
                 
                 self.days(message)
             else :
