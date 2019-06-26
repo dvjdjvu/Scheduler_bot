@@ -26,7 +26,7 @@ class Sheduler():
     menu_new_status = ''
     event_new = {}
     
-    days = {'1': True, '2': True, '3': True, '4': True, '5': True, '6': True, '7': True}
+    event_new_days = {'1': True, '2': True, '3': True, '4': True, '5': True, '6': True, '7': True}
     
     def __init__(self):
         self.menu_clear()
@@ -107,7 +107,7 @@ class Sheduler():
                 time = args[2]
                 
                 # Добавляем новое напоминание.
-                self.add(message.chat.id, name, time, text, self.days)
+                self.add(message.chat.id, name, time, text, self.event_new_days)
                 
             print(self.mongo.coll.find({"id": message.chat.id}).count())
             for men in self.mongo.coll.find({"id": message.chat.id}):
@@ -252,7 +252,7 @@ class Sheduler():
                 
                 self.event_new['days'][data['day']] = not self.event_new['days'][data['day']]
                 
-                self.add(message.chat.id, self.event_new['name'], self.event_new['time'], self.event_new['text'], self.days)
+                self.add(message.chat.id, self.event_new['name'], self.event_new['time'], self.event_new['text'], self.event_new_days)
                 
                 self.days(call.message)
                     
@@ -286,9 +286,7 @@ class Sheduler():
                 self.event_new['text'] = message.text
                 self.menu_new_status = ''
                 
-                print('self.event_new', self.event_new)
-                
-                self.add(message.chat.id, self.event_new['name'], self.event_new['time'], self.event_new['text'], self.days)
+                self.add(message.chat.id, self.event_new['name'], self.event_new['time'], self.event_new['text'], self.event_new_days)
                 
                 self.days(message)
             else :
