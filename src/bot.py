@@ -23,12 +23,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 class Sheduler():
     
-    menu_new_status = ''
-    event_new = {}
-    
-    def __init__(self):
-        self.menu_clear()
-        
+    def __init__(self):        
         self.bot = telebot.TeleBot(ShedulerToken.token)
         
         self.mongo = mongo.mongo()
@@ -44,7 +39,7 @@ class Sheduler():
         # Помощь
         @self.bot.message_handler(commands=['help'])
         def help(message):
-            self.menu_clear()
+            self.menu_clear(message.chat.id)
             
             _str = ''
             _str += '/help - помощь\n'
@@ -65,7 +60,7 @@ class Sheduler():
         # Регистрация в системе
         @self.bot.message_handler(commands=['start'])
         def get_start(message):
-            self.menu_clear()
+            self.menu_clear(message.chat.id)
             
             print('start', message.chat.id)
             
@@ -85,7 +80,7 @@ class Sheduler():
         # Добавить напоминание
         @self.bot.message_handler(commands=['add'])
         def get_add(message):
-            self.menu_clear()
+            self.menu_clear(message.chat.id)
             
             print('add', message.chat.id)
             
@@ -114,7 +109,7 @@ class Sheduler():
         # Включаем напоминание по имени.
         @self.bot.message_handler(commands=['on'])
         def get_on(message):
-            self.menu_clear()
+            self.menu_clear(message.chat.id)
             
             print('on', message.chat.id)
             
@@ -139,7 +134,7 @@ class Sheduler():
         # Выключаем напоминание по имени.
         @self.bot.message_handler(commands=['off'])
         def get_off(message):
-            self.menu_clear()
+            self.menu_clear(message.chat.id)
             
             print('off', message.chat.id)
             
@@ -164,7 +159,7 @@ class Sheduler():
         # Список напоминаний пользователя
         @self.bot.message_handler(commands=['events'])
         def get_events(message):
-            self.menu_clear()
+            self.menu_clear(message.chat.id)
             
             print('events', message.chat.id)
             self.events(message)
@@ -172,7 +167,7 @@ class Sheduler():
         # Удаляем напоминание
         @self.bot.message_handler(commands=['del'])
         def get_del(message):
-            self.menu_clear()
+            self.menu_clear(message.chat.id)
             
             print('del', message.chat.id)
             
@@ -192,14 +187,14 @@ class Sheduler():
         # Локация пользователя
         @self.bot.message_handler(commands=['geo'])
         def get_geo(message):
-            self.menu_clear()
+            self.menu_clear(message.chat.id)
             
             print('geo', message.chat.id)
             self.geoGet(message)
     
         @self.bot.message_handler(commands=['days'])
         def get_days(message):
-            self.menu_clear()
+            self.menu_clear(message.chat.id)
             
             print('days', message.chat.id)
             
@@ -221,7 +216,7 @@ class Sheduler():
             
         @self.bot.message_handler(commands=['menu'])
         def menu(message):
-            self.menu_clear()
+            self.menu_clear(message.chat.id)
             
             self.menu(message)
         
@@ -236,7 +231,12 @@ class Sheduler():
                 self.events(call.message)
             elif data['c'] == 'new' :
                 self.bot.send_message(_id, text='Напишите название нового напоминания')
-                self.menu_new_status = 'get_name'
+                
+                men = self.mongo.coll.find_one({"id": _id})
+                if men :
+                    men['event_new']['menu_new_status'] = 'get_name'
+                    self.mongo.coll.update({'id': _id}, {"$set": {'event_new': men['event_new']}})
+                    
             elif data['c'] == 'del' :
                 
                 name = data.get('name')
@@ -247,13 +247,7 @@ class Sheduler():
             elif data['c'] == 'menu' :
                 self.menu(call.message)
             elif data['c'] == 'add_day' :
-                
-                print("old self.event_new['days'][data['day']]", self.event_new['days'][data['day']])
-                
                 self.event_new['days'][data['day']] = not self.event_new['days'][data['day']]
-                
-                print("new self.event_new['days'][data['day']]", self.event_new['days'][data['day']])
-                print(self.event_new['days'])
                 
                 self.add(call.message.chat.id, self.event_new['name'], self.event_new['time'], self.event_new['text'], self.event_new['days'])
                 
@@ -264,20 +258,23 @@ class Sheduler():
         def get_text(message):
             print('text', message.chat.id, self.menu_new_status)
             
+            men = self.mongo.coll.find_one({"id": _id})
+            if not men :
+                return
+            
             if self.menu_new_status == 'get_name' :
-                self.event_new['name'] = message.text
-            
-                #self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
-            
-                self.menu_new_status = 'get_time'
+                men['event_new']['name'] = message.text
+                men['event_new']['menu_new_status'] = 'get_time'
+                self.mongo.coll.update({'id': _id}, {"$set": {'event_new': men['event_new']}})                
+                
                 self.bot.send_message(message.chat.id, "Напишите время нового напоминания(формат: 17:15)")
                 
                 print(self.event_new, self.menu_new_status)
             elif self.menu_new_status == 'get_time' :
                 if re.search(r'^\d{2,2}\:\d{2,2}$', message.text):
-                    self.event_new['time'] = message.text
-                    
-                    self.menu_new_status = 'get_text'
+                    men['event_new']['time'] = message.text
+                    men['event_new']['menu_new_status'] = 'get_text'
+                    self.mongo.coll.update({'id': _id}, {"$set": {'event_new': men['event_new']}})
                     
                     self.bot.send_message(message.chat.id, "Напишите текст напоминания")
                     
@@ -286,17 +283,15 @@ class Sheduler():
                     
                 print(self.event_new)
             elif self.menu_new_status == 'get_text' :
-                self.event_new['text'] = message.text
-                self.menu_new_status = ''
+                men['event_new']['text'] = message.text
+                men['event_new']['menu_new_status'] = ''
+                self.mongo.coll.update({'id': _id}, {"$set": {'event_new': men['event_new']}})
                 
                 self.add(message.chat.id, self.event_new['name'], self.event_new['time'], self.event_new['text'], self.event_new['days'])
                 
                 self.days(message)
             else :
-                
-                men = self.mongo.coll.find_one({"id": message.chat.id})
-                if men :
-                    self.bot.send_message(message.from_user.id, "Привет {}, используй /help ".format(men.get("first_name", '')))
+                self.bot.send_message(message.from_user.id, "Привет {}, используй /help ".format(men.get("first_name", '')))
                 
             '''
             if self.mongo.coll.find({"id": message.chat.id}).count() :
@@ -310,11 +305,16 @@ class Sheduler():
         self.threadTimer.do_run = False
         self.threadTimer.join()
     
-    def menu_clear(self):
-        self.event_new = {}
-        self.event_new['days'] = {'1': True, '2': True, '3': True, '4': True, '5': True, '6': True, '7': True}
-        self.event_new['days'] = {'1': True, '2': True, '3': True, '4': True, '5': True, '6': True, '7': True}
-        self.menu_new_status = ''        
+    def menu_clear(self, _id):
+        men = self.mongo.coll.find_one({"id": _id})
+        if men :
+            event_new = {}
+            event_new['days'] = {'1': True, '2': True, '3': True, '4': True, '5': True, '6': True, '7': True}
+            menu_new_status = ''
+                        
+            self.mongo.coll.update({'id': _id}, {"$set": {'event_new': event_new, 'menu_new_status': menu_new_status}})
+            
+        
     
     def del_event(self, message, name):
         men = self.mongo.coll.find_one({"id": message.chat.id})
@@ -354,6 +354,11 @@ class Sheduler():
             #self.bot.send_message(message.chat.id, 'Вы не зарегистрированы')
     
     def menu(self, message):
+        men = self.mongo.coll.find_one({"id": _id})
+        if men :
+            if not men.get('timezone_offset', None) :
+                self.bot.send_message(_id, 'Отправьте своё местоположение для уточнения вашей временной зоны')
+        
         markup = types.InlineKeyboardMarkup()
         button_events = types.InlineKeyboardButton(text='Ваши напоминания', callback_data=json.dumps({'c': 'events'}))
         button_new = types.InlineKeyboardButton(text='Добавить', callback_data=json.dumps({'c': 'new'}))
@@ -493,15 +498,18 @@ class Sheduler():
         self.bot.polling(none_stop=True, interval=0)
     
     def new(self, message):
-        self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name, "status": True})    
+        
+        self.mongo.coll.save({'id': message.chat.id, 
+                              'first_name': message.from_user.first_name, 
+                              'last_name': message.from_user.last_name, 
+                              'status': True,
+                              'menu_new_status': '',
+                              'event_new': {}})    
         self.geoGet(message)
     
     def add(self, _id, name, time, text, days = {}):
         men = self.mongo.coll.find_one({"id": _id})
-        if men :
-            if not men.get('timezone_offset', None) :
-                self.bot.send_message(_id, 'Отправьте своё местоположение для уточнения вашей временной зоны')
-                    
+        if men :    
             events = men.get('events', [])
 
             if self.find(events, name) == False :
@@ -510,8 +518,8 @@ class Sheduler():
                 event['name'] = name
                 event['time'] = time
                 event['text'] = text
-                #event['status'] = True 
                 event['days'] = days
+                #event['status'] = True 
                         
                 events.append(event)
                 
@@ -536,7 +544,7 @@ class Sheduler():
         flag = False
         # Ищем событие по имени
         for event in events:
-            print('event', event)
+            #print('event', event)
             if event['name'] == name :
                 return True
                 
