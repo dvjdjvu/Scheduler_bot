@@ -324,7 +324,7 @@ class Sheduler():
         if men :
             events = men.get('events', [])
             if len(events) == 0 :
-                self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, 'У вас нет напоминаний', reply_markup=types.InlineKeyboardMarkup().add(self.menu_button()))
+                self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='У вас нет напоминаний', reply_markup=types.InlineKeyboardMarkup().add(self.menu_button()))
                 return
                 
             _str = "Список напоминаний:\n"
@@ -333,9 +333,9 @@ class Sheduler():
                 print(event)
                 
             self.bot.send_message(message.chat.id, _str[:-1])
-            self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, _str[:-1], reply_markup=types.InlineKeyboardMarkup().add(self.menu_button()))
+            self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=_str[:-1], reply_markup=types.InlineKeyboardMarkup().add(self.menu_button()))
         else :
-            self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, 'Вы не зарегистрированы', reply_markup=types.InlineKeyboardMarkup().add(self.menu_button()))
+            self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Вы не зарегистрированы', reply_markup=types.InlineKeyboardMarkup().add(self.menu_button()))
             #self.bot.send_message(message.chat.id, 'Вы не зарегистрированы')
     
     def menu(self, message):
