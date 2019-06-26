@@ -256,7 +256,7 @@ class Sheduler():
         
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
-            print('text', message.chat.id, self.menu_new_status)
+            print('text', message.chat.id)
             
             men = self.mongo.coll.find_one({"id": _id})
             if not men :
