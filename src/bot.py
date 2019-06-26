@@ -471,8 +471,6 @@ class Sheduler():
             self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Главное меню', reply_markup=markup)
         except Exception as e :
             self.bot.send_message(chat_id=message.chat.id, text='Главное меню', reply_markup=markup)
-            
-        self.bot.me
     
     def menu_del_keyb(self, message):
         markup = types.InlineKeyboardMarkup()
