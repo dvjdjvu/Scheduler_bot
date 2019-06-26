@@ -227,7 +227,7 @@ class Sheduler():
             data = json.loads(call.data)
             _id = call.message.chat.id
             
-            men = self.mongo.coll.find_one({"id": message.chat.id})
+            men = self.mongo.coll.find_one({"id": _id})
             if not men :
                 return             
             
