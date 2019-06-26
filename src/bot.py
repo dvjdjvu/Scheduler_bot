@@ -459,7 +459,7 @@ class Sheduler():
         
         markup.add(self.menu_button())
         
-        self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Выберите дни недели напоминания', reply_markup=markup)
+        self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Выберите дни недели напоминания')#, reply_markup=markup)
     
     def process_step(self, message):
         chat_id = message.chat.id
