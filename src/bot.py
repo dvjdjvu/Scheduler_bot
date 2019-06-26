@@ -271,7 +271,6 @@ class Sheduler():
                 if re.search(r'^\d{2,2}\:\d{2,2}$', message.text):
                     self.event_new['time'] = message.text
                     
-                    self.bot.send_message(message.chat.id, "Выберите дни напоминаний")
                     self.menu_new_status = ''
                     
                     self.days(message)
@@ -459,7 +458,10 @@ class Sheduler():
         
         markup.add(self.menu_button())
         
-        self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Выберите дни недели напоминания')#, reply_markup=markup)
+        try :
+            self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Выберите дни напоминаний', reply_markup=markup)
+        else :
+            self.bot.send_message(chat_id=message.chat.id, text='Выберите дни напоминаний')
     
     def process_step(self, message):
         chat_id = message.chat.id
