@@ -354,10 +354,10 @@ class Sheduler():
             #self.bot.send_message(message.chat.id, 'Вы не зарегистрированы')
     
     def menu(self, message):
-        men = self.mongo.coll.find_one({"id": _id})
+        men = self.mongo.coll.find_one({"id": message.chat.id})
         if men :
             if not men.get('timezone_offset', None) :
-                self.bot.send_message(_id, 'Отправьте своё местоположение для уточнения вашей временной зоны')
+                self.bot.send_message(message.chat.id, 'Отправьте своё местоположение для уточнения вашей временной зоны')
         
         markup = types.InlineKeyboardMarkup()
         button_events = types.InlineKeyboardButton(text='Ваши напоминания', callback_data=json.dumps({'c': 'events'}))
