@@ -286,6 +286,8 @@ class Sheduler():
                 self.event_new['text'] = message.text
                 self.menu_new_status = ''
                 
+                print('self.event_new', self.event_new)
+                
                 self.add(message.chat.id, self.event_new['name'], self.event_new['time'], self.event_new['text'], self.days)
                 
                 self.days(message)
