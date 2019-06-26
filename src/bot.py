@@ -252,7 +252,7 @@ class Sheduler():
                 men['event_new']['days'][data['day']] = not men['event_new']['days'][data['day']]
                 self.mongo.coll.update({'id': _id}, {"$set": {'event_new': men['event_new']}})
                 
-                self.add(_id, self.event_new['name'], self.event_new['time'], self.event_new['text'], self.event_new['days'])
+                self.add(_id, men['event_new']['name'], men['event_new']['time'], men['event_new']['text'], men['event_new']['days'])
                 
                 self.days(call.message)
                     
