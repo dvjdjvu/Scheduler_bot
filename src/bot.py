@@ -320,11 +320,14 @@ class Sheduler():
         self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Напоминания {} нет'.format(name), reply_markup=markup)
     
     def events(self, message) :
+        markup = types.InlineKeyboardMarkup()
+        markup.add(self.menu_button())
+        
         men = self.mongo.coll.find_one({"id": message.chat.id})
         if men :
             events = men.get('events', [])
             if len(events) == 0 :
-                self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='У вас нет напоминаний', reply_markup=types.InlineKeyboardMarkup().add(self.menu_button()))
+                self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='У вас нет напоминаний', reply_markup=markup)
                 return
                 
             _str = "Список напоминаний:\n"
@@ -333,9 +336,9 @@ class Sheduler():
                 print(event)
                 
             self.bot.send_message(message.chat.id, _str[:-1])
-            self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=_str[:-1], reply_markup=types.InlineKeyboardMarkup().add(self.menu_button()))
+            self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=_str[:-1], reply_markup=markup)
         else :
-            self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Вы не зарегистрированы', reply_markup=types.InlineKeyboardMarkup().add(self.menu_button()))
+            self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Вы не зарегистрированы', reply_markup=markup)
             #self.bot.send_message(message.chat.id, 'Вы не зарегистрированы')
     
     def menu(self, message):
