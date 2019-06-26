@@ -248,9 +248,13 @@ class Sheduler():
                 self.menu(call.message)
             elif data['c'] == 'add_day' :
                 
-                self.add(call.message.chat.id, self.event_new['name'], self.event_new['time'], self.event_new['text'], self.event_new['days'])
+                print("old self.event_new['days'][data['day']]", self.event_new['days'][data['day']])
                 
                 self.event_new['days'][data['day']] = not self.event_new['days'][data['day']]
+                
+                print("new self.event_new['days'][data['day']]", self.event_new['days'][data['day']])
+                
+                self.add(call.message.chat.id, self.event_new['name'], self.event_new['time'], self.event_new['text'], self.event_new['days'])
                 
                 self.days(call.message)
                     
