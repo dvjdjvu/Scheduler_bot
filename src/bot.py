@@ -313,11 +313,11 @@ class Sheduler():
                     self.mongo.coll.update({'id': message.chat.id}, {"$set": {'events': events}})
                     
                     #self.bot.send_message(message.chat.id, 'Напоминания {} удалено'.format(name))
-                    self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Напоминания {} удалено'.format(name), reply_markup=markup)
+                    self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Напоминания {} удалено'.format(name))#, reply_markup=markup)
                     return
                 
         #self.bot.send_message(message.chat.id, 'Напоминания {} нет'.format(name))
-        self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Напоминания {} нет'.format(name), reply_markup=markup)
+        self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Напоминания {} нет'.format(name))#, reply_markup=markup)
     
     def events(self, message) :
         markup = types.InlineKeyboardMarkup()
