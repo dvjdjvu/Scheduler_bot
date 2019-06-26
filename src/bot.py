@@ -227,15 +227,17 @@ class Sheduler():
             data = json.loads(call.data)
             _id = call.message.chat.id
             
+            men = self.mongo.coll.find_one({"id": message.chat.id})
+            if not men :
+                return             
+            
             if data['c'] == 'events' :
                 self.events(call.message)
             elif data['c'] == 'new' :
                 self.bot.send_message(_id, text='Напишите название нового напоминания')
                 
-                men = self.mongo.coll.find_one({"id": _id})
-                if men :
-                    men['event_new']['menu_new_status'] = 'get_name'
-                    self.mongo.coll.update({'id': _id}, {"$set": {'event_new': men['event_new']}})
+                men['event_new']['menu_new_status'] = 'get_name'
+                self.mongo.coll.update({'id': _id}, {"$set": {'event_new': men['event_new']}})
                     
             elif data['c'] == 'del' :
                 
@@ -246,8 +248,9 @@ class Sheduler():
                 self.menu_del(call.message)
             elif data['c'] == 'menu' :
                 self.menu(call.message)
-            elif data['c'] == 'add_day' :
-                self.event_new['days'][data['day']] = not self.event_new['days'][data['day']]
+            elif data['c'] == 'add_day' :                
+                men['event_new']['days'][data['day']] = not men['event_new']['days'][data['day']]
+                self.mongo.coll.update({'id': message.chat.id}, {"$set": {'event_new': men['event_new']}})
                 
                 self.add(call.message.chat.id, self.event_new['name'], self.event_new['time'], self.event_new['text'], self.event_new['days'])
                 
