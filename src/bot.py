@@ -258,7 +258,7 @@ class Sheduler():
         def get_text(message):
             print('text', message.chat.id)
             
-            men = self.mongo.coll.find_one({"id": _id})
+            men = self.mongo.coll.find_one({"id": message.chat.id})
             if not men :
                 return
             
