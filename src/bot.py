@@ -26,6 +26,8 @@ class Sheduler():
     menu_new_status = ''
     event_new = {}
     
+    days = {'1': True, '2': True, '3': True, '4': True, '5': True, '6': True, '7': True}
+    
     def __init__(self):
         self.menu_clear()
         
@@ -105,7 +107,7 @@ class Sheduler():
                 time = args[2]
                 
                 # Добавляем новое напоминание.
-                self.add(message.chat.id, name, time, text)
+                self.add(message.chat.id, name, time, text, self.days)
                 
             print(self.mongo.coll.find({"id": message.chat.id}).count())
             for men in self.mongo.coll.find({"id": message.chat.id}):
@@ -248,10 +250,9 @@ class Sheduler():
                 self.menu(call.message)
             elif data['c'] == 'add_day' :
                 
-                if self.event_new['days'][data['day']] == 'X' :
-                    self.event_new['days'][data['day']] = 'V'
-                else :
-                    self.event_new['days'][data['day']] = 'X'
+                self.event_new['days'][data['day']] = not self.event_new['days'][data['day']]
+                
+                self.add(message.chat.id, self.event_new['name'], self.event_new['time'], self.event_new['text'], self.days)
                 
                 self.days(call.message)
                     
@@ -285,6 +286,8 @@ class Sheduler():
                 self.event_new['text'] = message.text
                 self.menu_new_status = ''
                 
+                self.add(message.chat.id, self.event_new['name'], self.event_new['time'], self.event_new['text'], self.days)
+                
                 self.days(message)
             else :
                 
@@ -306,7 +309,7 @@ class Sheduler():
     
     def menu_clear(self):
         self.event_new = {}
-        self.event_new['days'] = {'1': 'X', '2': 'X', '3': 'X', '4': 'X', '5': 'X', '6': 'X', '7': 'X'}
+        self.event_new['days'] = {'1': True, '2': True, '3': True, '4': True, '5': True, '6': True, '7': True}
         self.menu_new_status = ''        
     
     def del_event(self, message, name):
@@ -447,13 +450,13 @@ class Sheduler():
         button_Saturday = types.InlineKeyboardButton(text='Суббота', callback_data=json.dumps({'c': 'add_day', 'day': '6'}))
         button_Sunday = types.InlineKeyboardButton(text='Воскресенье', callback_data=json.dumps({'c': 'add_day', 'day': '7'}))
         
-        button_Monday_check = types.InlineKeyboardButton(text=self.event_new['days']['1'], callback_data=json.dumps({'c': 'add_day', 'day': '1'}))
-        button_Tuesday_check = types.InlineKeyboardButton(text=self.event_new['days']['2'], callback_data=json.dumps({'c': 'add_day', 'day': '2'}))
-        button_Wednesday_check = types.InlineKeyboardButton(text=self.event_new['days']['3'], callback_data=json.dumps({'c': 'add_day', 'day': '3'}))
-        button_Thursday_check = types.InlineKeyboardButton(text=self.event_new['days']['4'], callback_data=json.dumps({'c': 'add_day', 'day': '4'}))
-        button_Friday_check = types.InlineKeyboardButton(text=self.event_new['days']['5'], callback_data=json.dumps({'c': 'add_day', 'day': '5'}))
-        button_Saturday_check = types.InlineKeyboardButton(text=self.event_new['days']['6'], callback_data=json.dumps({'c': 'add_day', 'day': '6'}))
-        button_Sunday_check = types.InlineKeyboardButton(text=self.event_new['days']['7'], callback_data=json.dumps({'c': 'add_day', 'day': '7'}))
+        button_Monday_check = types.InlineKeyboardButton(text=str(self.event_new['days']['1']), callback_data=json.dumps({'c': 'add_day', 'day': '1'}))
+        button_Tuesday_check = types.InlineKeyboardButton(text=str(self.event_new['days']['2']), callback_data=json.dumps({'c': 'add_day', 'day': '2'}))
+        button_Wednesday_check = types.InlineKeyboardButton(text=str(self.event_new['days']['3']), callback_data=json.dumps({'c': 'add_day', 'day': '3'}))
+        button_Thursday_check = types.InlineKeyboardButton(text=str(self.event_new['days']['4']), callback_data=json.dumps({'c': 'add_day', 'day': '4'}))
+        button_Friday_check = types.InlineKeyboardButton(text=str(self.event_new['days']['5']), callback_data=json.dumps({'c': 'add_day', 'day': '5'}))
+        button_Saturday_check = types.InlineKeyboardButton(text=str(self.event_new['days']['6']), callback_data=json.dumps({'c': 'add_day', 'day': '6'}))
+        button_Sunday_check = types.InlineKeyboardButton(text=str(self.event_new['days']['7']), callback_data=json.dumps({'c': 'add_day', 'day': '7'}))
         
         markup.add(button_Monday, button_Monday_check)
         markup.add(button_Tuesday, button_Tuesday_check)
@@ -489,7 +492,7 @@ class Sheduler():
         self.mongo.coll.save({'id': message.chat.id, 'first_name': message.from_user.first_name, 'last_name': message.from_user.last_name, "status": True})    
         self.geoGet(message)
     
-    def add(self, _id, name, time, text):
+    def add(self, _id, name, time, text, days = {}):
         men = self.mongo.coll.find_one({"id": _id})
         if men :
             if not men.get('timezone_offset', None) :
@@ -504,16 +507,25 @@ class Sheduler():
                 event['time'] = time
                 event['text'] = text
                 #event['status'] = True 
-                event['days'] = {'1': True, '2': True, '3': True, '4': True, '5': True, '6': True, '7': True}
+                event['days'] = days
                         
                 events.append(event)
                 
                 print(events)
             
-                self.mongo.coll.update({'id': _id}, {"$set": {'events': events}})                
+                self.mongo.coll.update({'id': _id}, {"$set": {'events': events}})
                 self.bot.send_message(_id, 'Напоминание {} добавлено'.format(name))
             else : 
-                self.bot.send_message(_id, 'Напоминание {} уже существует'.format(name))
+                for event in events:
+                    if event['name'] == name :
+                        event['name'] = name
+                        event['time'] = time
+                        event['text'] = text
+                        event['days'] = days
+                        #event['status'] = True                        
+                                      
+                        self.mongo.coll.update({'id': _id}, {"$set": {'events': events}})
+                        #self.bot.send_message(_id, 'Напоминание {} уже существует'.format(name))
     
     # Поиск события по имени
     def find(self, events, name):
