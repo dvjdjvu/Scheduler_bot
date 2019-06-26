@@ -335,7 +335,6 @@ class Sheduler():
                 _str += "{}: Время - '{}' Дни - '{}' Сообщение - '{}'\n".format(event['name'], event['time'], event.get('days', ''), event['text'])
                 print(event)
                 
-            self.bot.send_message(message.chat.id, _str[:-1])
             self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=_str[:-1], reply_markup=markup)
         else :
             self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Вы не зарегистрированы', reply_markup=markup)
@@ -458,7 +457,8 @@ class Sheduler():
         markup.add(button_Saturday, button_Saturday_check)
         markup.add(button_Sunday, button_Sunday_check)
         
-        #self.bot.send_message(chat_id=message.chat.id, text='Выберите дни недели напоминания', reply_markup=markup)
+        markup.add(self.menu_button())
+        
         self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Выберите дни недели напоминания', reply_markup=markup)
     
     def process_step(self, message):
