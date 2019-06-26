@@ -253,6 +253,7 @@ class Sheduler():
                 self.event_new['days'][data['day']] = not self.event_new['days'][data['day']]
                 
                 print("new self.event_new['days'][data['day']]", self.event_new['days'][data['day']])
+                print(self.event_new['days'])
                 
                 self.add(call.message.chat.id, self.event_new['name'], self.event_new['time'], self.event_new['text'], self.event_new['days'])
                 
