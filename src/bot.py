@@ -260,9 +260,9 @@ class Sheduler():
                 if name :
                     men['event_new']['name'] = name
                     men['event_new']['menu_new_status'] = 'get_time'
-                    self.mongo.coll.update({'id': message.chat.id}, {"$set": {'event_new': men['event_new']}})                
+                    self.mongo.coll.update({'id': _id}, {"$set": {'event_new': men['event_new']}})                
                     
-                    self.bot.send_message(message.chat.id, "Новое время напоминания(формат: 17:15)")
+                    self.bot.send_message(_id, "Новое время напоминания(формат: 17:15)")
                 
                 self.menu_change(call.message)
         
