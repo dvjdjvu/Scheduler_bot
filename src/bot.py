@@ -256,7 +256,15 @@ class Sheduler():
                 
                 self.days(call.message)
             elif data['c'] == 'change' :
-                self.menu_change(call.message)
+                name = data.get('name')
+                if name :
+                    men['event_new']['name'] = name
+                    men['event_new']['menu_new_status'] = 'get_time'
+                    self.mongo.coll.update({'id': message.chat.id}, {"$set": {'event_new': men['event_new']}})                
+                    
+                    self.bot.send_message(message.chat.id, "Новое время напоминания(формат: 17:15)")
+                
+                #self.menu_change(call.message)
         
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
