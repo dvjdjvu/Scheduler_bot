@@ -382,14 +382,14 @@ class Sheduler():
     def menu_button(self) :
         return types.InlineKeyboardButton(text='Меню', callback_data=json.dumps({'c': 'menu'}))
     
-    def menu_events_keyb(self, message, event):
+    def menu_events_keyb(self, message, event_text):
         markup = types.InlineKeyboardMarkup()
         
         men = self.mongo.coll.find_one({"id": message.chat.id})
         if men :
             events = men.get('events', [])
             for event in events:
-                button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'c': event, 'name': event['name']}))
+                button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'c': event_text, 'name': event['name']}))
                 markup.add(button)
         
         markup.add(self.menu_button())
