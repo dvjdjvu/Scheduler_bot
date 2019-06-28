@@ -265,6 +265,11 @@ class Sheduler():
                     self.bot.send_message(_id, "Введите время напоминания(формат: 17:15)")
                 else:
                     self.menu_change(call.message)
+            elif data['c'] == 'geo' :
+                self.menu_clear(message.chat.id)
+                
+                print('geo', message.chat.id)
+                self.geoGet(message)                
         
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
@@ -374,6 +379,7 @@ class Sheduler():
         button_new = types.InlineKeyboardButton(text='Добавить', callback_data=json.dumps({'c': 'new'}))
         button_change = types.InlineKeyboardButton(text='Изменить', callback_data=json.dumps({'c': 'change'}))
         button_del = types.InlineKeyboardButton(text='Удалить', callback_data=json.dumps({'c': 'del'}))
+        button_del = types.InlineKeyboardButton(text='Уточнить время', callback_data=json.dumps({'c': 'geo'}))
 
         markup.add(button_events)
         markup.add(button_new)
