@@ -582,10 +582,17 @@ class Sheduler():
         return events
     
     def geoGet(self, message):
-        keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+        markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
         button_geo = types.KeyboardButton(text="Отправить местоположение", request_location=True)
-        keyboard.add(button_geo)
-        self.bot.send_message(message.chat.id, "Отправьте своё местоположение для уточнения вашей временной зоны", reply_markup=keyboard)
+        markup.add(button_geo)
+        #self.bot.send_message(message.chat.id, "Отправьте своё местоположение для уточнения вашей временной зоны", reply_markup=keyboard)
+        
+        markup.add(self.menu_button())
+        
+        try :
+            self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Отправьте своё местоположение для уточнения вашей временной зоны', reply_markup=markup)
+        except Exception as e :
+            self.bot.send_message(message.chat.id, "Отправьте своё местоположение для уточнения вашей временной зоны", reply_markup=keyboard)
     
     def send_message(self, message) :
         
