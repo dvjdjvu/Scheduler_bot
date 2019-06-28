@@ -255,7 +255,8 @@ class Sheduler():
                 self.add(_id, men['event_new']['name'], men['event_new']['time'], men['event_new']['text'], men['event_new']['days'])
                 
                 self.days(call.message)
-                    
+            elif data['c'] == 'change' :
+                self.menu_change(call.message)
         
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
@@ -381,14 +382,14 @@ class Sheduler():
     def menu_button(self) :
         return types.InlineKeyboardButton(text='Меню', callback_data=json.dumps({'c': 'menu'}))
     
-    def menu_del_keyb(self, message):
+    def menu_events_keyb(self, message, event):
         markup = types.InlineKeyboardMarkup()
         
         men = self.mongo.coll.find_one({"id": message.chat.id})
         if men :
             events = men.get('events', [])
             for event in events:
-                button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'c': 'del', 'name': event['name']}))
+                button = types.InlineKeyboardButton(text=event['name'], callback_data=json.dumps({'c': event, 'name': event['name']}))
                 markup.add(button)
         
         markup.add(self.menu_button())
@@ -396,9 +397,12 @@ class Sheduler():
         return markup
     
     def menu_del(self, message):              
-        self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Выберите напоминание для удаления', reply_markup=self.menu_del_keyb(message))
-        #self.bot.send_message(chat_id=message.chat.id, text='Выберите напоминание для удаления', reply_markup=self.menu_del_keyb(message))
-        
+        self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, 
+                                   text='Выберите напоминание для удаления', reply_markup=self.menu_events_keyb(message, 'del'))
+
+    def menu_change(self, message):              
+        self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, 
+                                   text='Выберите напоминание для редактирования', reply_markup=self.menu_events_keyb(message, 'change'))
         
     def day_off(self, _id, name, day):                
         men = self.mongo.coll.find_one({"id": _id})
