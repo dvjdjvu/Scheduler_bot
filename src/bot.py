@@ -269,7 +269,7 @@ class Sheduler():
                 self.menu_clear(_id)
                 
                 print('geo', _id)
-                self.geoGet(message)                
+                self.geoGet(call.message)                
         
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
