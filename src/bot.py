@@ -266,9 +266,9 @@ class Sheduler():
                 else:
                     self.menu_change(call.message)
             elif data['c'] == 'geo' :
-                self.menu_clear(message.chat.id)
+                self.menu_clear(_id)
                 
-                print('geo', message.chat.id)
+                print('geo', _id)
                 self.geoGet(message)                
         
         @self.bot.message_handler(content_types=['text'])
