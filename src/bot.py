@@ -264,7 +264,7 @@ class Sheduler():
                     
                     self.bot.send_message(message.chat.id, "Новое время напоминания(формат: 17:15)")
                 
-                #self.menu_change(call.message)
+                self.menu_change(call.message)
         
         @self.bot.message_handler(content_types=['text'])
         def get_text(message):
