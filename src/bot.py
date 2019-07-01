@@ -293,7 +293,7 @@ class Sheduler():
                     
                     self.bot.send_message(message.chat.id, "Напишите текст напоминания")
                 except :
-                    self.bot.send_message(message.chat.id, "Время {} некорректно".format(message.text))
+                    self.bot.send_message(message.chat.id, "Время {} некорректно, попробуйте еще раз.".format(message.text))
                     
                 '''
                 if re.search(r'^\d{2,2}\:\d{2,2}$', message.text):
