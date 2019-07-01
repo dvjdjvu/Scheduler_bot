@@ -616,7 +616,7 @@ class Sheduler():
                         
                         #print(_time, _time_user)
                         
-                        if _time == _time_user and event['status'] and event['days'][str(now.weekday() + 1)] == True:
+                        if _time == _time_user and event.get('status', True) and event['days'][str(now.weekday() + 1)] == True:
                             self.bot.send_message(men['id'], event['text'])
                 
             time.sleep(45)
