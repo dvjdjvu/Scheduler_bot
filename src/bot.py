@@ -440,12 +440,13 @@ class Sheduler():
         button_new = types.InlineKeyboardButton(text='Добавить', callback_data=json.dumps({'c': 'new'}))
         button_change = types.InlineKeyboardButton(text='Изменить', callback_data=json.dumps({'c': 'change'}))
         button_del = types.InlineKeyboardButton(text='Удалить', callback_data=json.dumps({'c': 'del'}))
-        button_del = types.InlineKeyboardButton(text='Уточнить время', callback_data=json.dumps({'c': 'geo'}))
+        button_time = types.InlineKeyboardButton(text='Уточнить время', callback_data=json.dumps({'c': 'geo'}))
 
         markup.add(button_events)
         markup.add(button_new)
         markup.add(button_change)
         markup.add(button_del)
+        markup.add(button_time)
         
         print('message.message_id', message.message_id)
         
