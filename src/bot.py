@@ -370,7 +370,7 @@ class Sheduler():
                 
             _str = "Список напоминаний:\n"
             for event in events:
-                _str += "Напоминание {}: в - '{}' по - '{}'\n".format(event['name'], event['time'], self.event_day_str(event.get('days', '')))
+                _str += "Напоминание {}: в - '{}' по - '{}'\n".format(event['name'], event['time'], self.event_day_str(event.get('days', {})))
                 print(event)
             
             
