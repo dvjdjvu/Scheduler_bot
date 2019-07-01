@@ -599,7 +599,7 @@ class Sheduler():
         try :
             self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Отправьте своё местоположение для уточнения вашей временной зоны', reply_markup=markup)
         except Exception as e :
-            self.bot.send_message(message.chat.id, "Отправьте своё местоположение для уточнения вашей временной зоны", reply_markup=[markup, markup2])
+            self.bot.send_message(message.chat.id, "Отправьте своё местоположение для уточнения вашей временной зоны", reply_markup={markup, markup2})
     
     def send_message(self, message) :
         
