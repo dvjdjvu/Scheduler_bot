@@ -372,11 +372,17 @@ class Sheduler():
             for event in events:
                 _str += "Напоминание {}: в - '{}' по - '{}'\n".format(event['name'], event['time'], self.event_day_str(event.get('days', '')))
                 print(event)
-                
-            self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=_str[:-1], reply_markup=markup)
+            
+            
+            try :    
+                self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=_str[:-1], reply_markup=markup)
+            except:
+                self.bot.send_message(chat_id=message.chat.id, text=_str[:-1], reply_markup=markup)
         else :
-            self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Вы не зарегистрированы', reply_markup=markup)
-            #self.bot.send_message(message.chat.id, 'Вы не зарегистрированы')
+            try :    
+                self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Вы не зарегистрированы', reply_markup=markup)
+            except:
+                self.bot.send_message(message.chat.id, 'Вы не зарегистрированы')
     
     def event_day_str(self, days):
         _str = ''
