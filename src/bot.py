@@ -285,6 +285,17 @@ class Sheduler():
                 self.bot.send_message(message.chat.id, "Введите время напоминания(формат: 17:15)")
                 
             elif men['event_new']['menu_new_status'] == 'get_time' :
+                try :
+                    datetime.datetime.strptime(message.text, '%H:%M')
+                    men['event_new']['time'] = message.text
+                    men['event_new']['menu_new_status'] = 'get_text'
+                    self.mongo.coll.update({'id': message.chat.id}, {"$set": {'event_new': men['event_new']}})
+                    
+                    self.bot.send_message(message.chat.id, "Напишите текст напоминания")
+                except :
+                    self.bot.send_message(message.chat.id, "Время {} некорректно".format(message.text))
+                    
+                '''
                 if re.search(r'^\d{2,2}\:\d{2,2}$', message.text):
                     men['event_new']['time'] = message.text
                     men['event_new']['menu_new_status'] = 'get_text'
@@ -294,7 +305,8 @@ class Sheduler():
                     
                 else :
                     self.bot.send_message(message.chat.id, "Время {} некорректно".format(message.text))
-                    
+                 '''
+                
             elif men['event_new']['menu_new_status'] == 'get_text' :
                 men['event_new']['text'] = message.text
                 men['event_new']['menu_new_status'] = ''
