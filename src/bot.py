@@ -184,13 +184,35 @@ class Sheduler():
                 
                 self.del_event(message, name)
                         
-        # Локация пользователя
+        # Запрос локации пользователя
         @self.bot.message_handler(commands=['geo'])
         def get_geo(message):
             self.menu_clear(message.chat.id)
             
             print('geo', message.chat.id)
             self.geoGet(message)
+    
+        # Локация пользователя
+        @self.bot.message_handler(content_types=['location'])
+        def get_location(message):
+            print('location', message.chat.id)
+            ##
+            #  Берем временную зону пользователя.
+            ##
+            tz = tzwhere.tzwhere()
+            timezone_str = tz.tzNameAt(message.location.latitude, message.location.longitude)            
+        
+            timezone = pytz.timezone(timezone_str)
+        
+            #print(timezone, timezone.utcoffset(datetime.datetime.now()))
+            timezone_offset = str(timezone.utcoffset(datetime.datetime.now()))
+        
+            self.mongo.coll.update({"id": message.chat.id}, {"$set": {"latitude": message.location.latitude, "longitude": message.location.longitude, "timezone_offset": timezone_offset}})
+        
+            self.bot.send_message(message.from_user.id, "Ваше местоположение и временная зона: {} {}".format(timezone_str, timezone_offset))
+        
+            #for men in self.mongo.coll.find({"id": message.chat.id}):
+            #    print(men)        
     
         @self.bot.message_handler(commands=['days'])
         def get_days(message):
