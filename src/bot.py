@@ -211,8 +211,6 @@ class Sheduler():
                     markup.add(button)
                     
             self.bot.send_message(chat_id=message.chat.id, text='Ваши события', reply_markup=markup)
-            #self.bot.register_next_step_handler(message, self.process_step)
-            
             
         @self.bot.message_handler(commands=['menu'])
         def menu(message):
@@ -360,13 +358,36 @@ class Sheduler():
                 
             _str = "Список напоминаний:\n"
             for event in events:
-                _str += "{}: Время - '{}' Дни - '{}' Сообщение - '{}'\n".format(event['name'], event['time'], event.get('days', ''), event['text'])
+                _str += "Напоминание {}: в - '{}' по - '{}'\n".format(event['name'], event['time'], self.event_day_str(event.get('days', '')))
                 print(event)
                 
             self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=_str[:-1], reply_markup=markup)
         else :
             self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Вы не зарегистрированы', reply_markup=markup)
             #self.bot.send_message(message.chat.id, 'Вы не зарегистрированы')
+    
+    def event_day_str(self, days):
+        _str = ''
+        for day, v in days.items():
+            if v == True :
+                if day == '1' :
+                    _str += 'Пн'
+                elif day == '2' :
+                    _str += 'Вт'
+                elif day == '3' :
+                    _str += 'Ср'
+                elif day == '4' :
+                    _str += 'Чт'
+                elif day == '5' :
+                    _str += 'Пт'
+                elif day == '6' :
+                    _str += 'Сб'
+                elif day == '7' :
+                    _str += 'Вс'
+                    
+                _str += ' '
+                
+        return _str
     
     def menu(self, message):
         men = self.mongo.coll.find_one({"id": message.chat.id})
@@ -504,16 +525,6 @@ class Sheduler():
             self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Выберите дни напоминаний', reply_markup=markup)
         except Exception as e :
             self.bot.send_message(chat_id=message.chat.id, text='Выберите дни напоминаний', reply_markup=markup)
-    
-    def process_step(self, message):
-        chat_id = message.chat.id
-        print(message.text)
-        if message.text == '1':
-            pass
-        else:
-            pass
-        
-        #call.data = json.loads(call.data)
         
     def run(self):
         self.threadTimer.start()
