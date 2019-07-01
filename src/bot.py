@@ -587,12 +587,6 @@ class Sheduler():
         markup.add(button_geo)
         
         #self.bot.send_message(message.chat.id, "Отправьте своё местоположение для уточнения вашей временной зоны", reply_markup=markup)
-        self.bot.send_message(message.chat.id, reply_markup=markup)
-        
-        return
-        
-        markup2 = types.InlineKeyboardMarkup()
-        markup2.add(self.menu_button())
         
         try :
             self.bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text='Отправьте своё местоположение для уточнения вашей временной зоны', reply_markup=markup)
