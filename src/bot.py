@@ -592,7 +592,7 @@ class Sheduler():
                 event = {}
                 event['name'] = name
                 event['time'] = time
-                event['time_last'] = None
+                #event['time_last'] = None
                 event['text'] = text
                 event['days'] = days
                 #event['status'] = True 
@@ -608,7 +608,7 @@ class Sheduler():
                     if event['name'] == name :
                         event['name'] = name
                         event['time'] = time
-                        event['time_last'] = None
+                        #event['time_last'] = None
                         event['text'] = text
                         event['days'] = days
                         #event['status'] = True                        
