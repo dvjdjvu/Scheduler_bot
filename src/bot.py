@@ -668,7 +668,8 @@ class Sheduler():
                         
                         #print(_time, _time_user)
                         
-                        print( time.mktime(_time_user.timetuple()), time.mktime(event.get('time_last', _time_user).timetuple()) )
+                        print( time.mktime(_time_user.timetuple()) )
+                        print( time.mktime(event.get('time_last', _time_user).timetuple()) )
                         
                         if (_time >= _time_user
                             and (time.mktime(_time_user.timetuple()) - time.mktime(event.get('time_last', _time_user).timetuple()) > 24 * 60 * 60)
