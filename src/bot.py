@@ -7,7 +7,7 @@ sys.path.append('../token')
 import mongo
 import pytz
 from tzwhere import tzwhere
-import datetime
+import datetime, time
 from threading import Thread
 import sched, time
 import telebot
@@ -53,7 +53,7 @@ class Sheduler():
             _str += '/geo - взять локацию, для уточнения времени\n'
             
             _str += '\n'
-            _str += '/menu - эксперементальная версия с кнопками управления\n'
+            _str += '/menu - версия с кнопками управления\n'
             
             self.bot.send_message(message.chat.id, _str)
         
@@ -592,6 +592,7 @@ class Sheduler():
                 event = {}
                 event['name'] = name
                 event['time'] = time
+                event['time_last'] = None
                 event['text'] = text
                 event['days'] = days
                 #event['status'] = True 
@@ -607,6 +608,7 @@ class Sheduler():
                     if event['name'] == name :
                         event['name'] = name
                         event['time'] = time
+                        event['time_last'] = None
                         event['text'] = text
                         event['days'] = days
                         #event['status'] = True                        
@@ -666,8 +668,19 @@ class Sheduler():
                         
                         #print(_time, _time_user)
                         
+                        if (_time >= _time_user
+                            and (time.mktime(_time_user.timetuple()) - event.get('time_last', time.mktime(_time_user.timetuple())) > 24 * 60 * 60)
+                            and event.get('status', True)
+                            and event['days'][str(now.weekday() + 1)] == True):
+                            
+                            
+                            event['time_last'] = _time_user
+                            self.mongo.coll.update({'id': men['id']}, {"$set": {'events': events}})
+                            
+                            self.bot.send_message(men['id'], event['text'])
+                        '''
                         if _time == _time_user and event.get('status', True) and event['days'][str(now.weekday() + 1)] == True:
                             self.bot.send_message(men['id'], event['text'])
-                
-            time.sleep(45)
+                        '''
+            time.sleep(60)
             
