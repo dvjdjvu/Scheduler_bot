@@ -668,6 +668,7 @@ class Sheduler():
                         
                         #print(_time, _time_user)
                         
+                        print( _time_user )
                         print( time.mktime(_time_user.timetuple()) )
                         print( time.mktime(event.get('time_last', _time_user).timetuple()) )
                         
