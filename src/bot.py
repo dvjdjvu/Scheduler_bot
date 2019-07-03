@@ -669,6 +669,11 @@ class Sheduler():
                         
                         #print('_time {} _time_user {}'.format(_time, _time_user))                        
                         
+                        print(_time >= _time_user)
+                        print(time.mktime(now.timetuple()) - time.mktime(event.get('time_last', now).timetuple()))
+                        print(event.get('status', True))
+                        print(event['days'][str(now.weekday() + 1)] == True)
+                        
                         if (_time >= _time_user
                             and (time.mktime(now.timetuple()) - time.mktime(event.get('time_last', now).timetuple()) > 24 * 60 * 60)
                             and event.get('status', True)
