@@ -670,8 +670,8 @@ class Sheduler():
                         print('_time {} _time_user {}'.format(_time, _time_user))
                         
                         print( _time_user )
-                        print( time.mktime(_time_user.timetuple()) )
-                        print( time.mktime(event.get('time_last', _time_user).timetuple()) )
+                        print( time.mktime(datetime.strptime(_time_user, '%H:%M').timetuple()) )
+                        print( time.mktime(datetime.strptime(event.get('time_last', _time_user), '%H:%M').timetuple()) )
                         
                         '''
                         if (_time >= _time_user
