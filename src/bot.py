@@ -667,24 +667,19 @@ class Sheduler():
                         else :
                             _time_user = _time
                         
-                        print('_time {} _time_user {}'.format(_time, _time_user))
+                        #print('_time {} _time_user {}'.format(_time, _time_user))                        
                         
-                        print( _time_user )
-                        print( time.mktime(datetime.datetime.strptime(_time_user, '%H:%M').timetuple()) )
-                        print( time.mktime(datetime.datetime.strptime(event.get('time_last', _time_user), '%H:%M').timetuple()) )
-                        
-                        '''
                         if (_time >= _time_user
-                            and (time.mktime(_time_user.timetuple()) - time.mktime(event.get('time_last', _time_user).timetuple()) > 24 * 60 * 60)
+                            and (time.mktime(now.timetuple()) - time.mktime(event.get('time_last', now).timetuple()) > 24 * 60 * 60)
                             and event.get('status', True)
                             and event['days'][str(now.weekday() + 1)] == True):
                             
                             
-                            event['time_last'] = _time_user
+                            event['time_last'] = now
                             self.mongo.coll.update({'id': men['id']}, {"$set": {'events': events}})
                             
                             self.bot.send_message(men['id'], event['text'])
-                        '''
+                        
                         '''
                         if _time == _time_user and event.get('status', True) and event['days'][str(now.weekday() + 1)] == True:
                             self.bot.send_message(men['id'], event['text'])
