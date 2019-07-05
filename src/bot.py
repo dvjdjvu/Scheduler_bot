@@ -678,7 +678,7 @@ class Sheduler():
                         
                         print('------------------------')
                         print(_time >= _time_user)
-                        print(time.mktime(now.timetuple()), time.mktime(event.get('time_last', now).timetuple()), time_diff)
+                        print(time.mktime(now.timetuple()), time.mktime(event.get('time_last', now).timetuple()), time_diff, 24 * 60 * 60)
                         print(event.get('status', True))
                         print(event['days'][str(now.weekday() + 1)])
                         
