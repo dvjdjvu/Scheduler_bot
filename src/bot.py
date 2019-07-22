@@ -299,14 +299,16 @@ class Sheduler():
             if not men :
                 return
             
-            if men['event_new']['menu_new_status'] == 'get_name' :
+            menu_new_status = men['event_new'].get('menu_new_status', '')
+            
+            if menu_new_status == 'get_name' :
                 men['event_new']['name'] = message.text
                 men['event_new']['menu_new_status'] = 'get_time'
                 self.mongo.coll.update({'id': message.chat.id}, {"$set": {'event_new': men['event_new']}})                
                 
                 self.bot.send_message(message.chat.id, "Введите время напоминания(формат: 17:15)")
                 
-            elif men['event_new']['menu_new_status'] == 'get_time' :
+            elif menu_new_status == 'get_time' :
                 try :
                     datetime.datetime.strptime(message.text, '%H:%M')
                     men['event_new']['time'] = message.text
@@ -329,7 +331,7 @@ class Sheduler():
                     self.bot.send_message(message.chat.id, "Время {} некорректно".format(message.text))
                  '''
                 
-            elif men['event_new']['menu_new_status'] == 'get_text' :
+            elif menu_new_status == 'get_text' :
                 men['event_new']['text'] = message.text
                 men['event_new']['menu_new_status'] = ''
                 self.mongo.coll.update({'id': message.chat.id}, {"$set": {'event_new': men['event_new']}})
